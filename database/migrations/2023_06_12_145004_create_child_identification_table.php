@@ -38,14 +38,14 @@ class CreateChildIdentificationTable extends Migration
             $table->integer('father_id_no');
             $table->date('death_date')->nullable();
 
-            $table->boolean('has_disability');
+            $table->boolean('has_disability')->default(false);
             $table->string('disability_type')->nullable();
             $table->string('sponsorship_category');
             $table->enum('scale_of_poverty',['VERY POOR','SEVERE','POOR']);
 
             $table->unsignedBigInteger('sr_id')->nullable();
 
-
+            $table->softDeletes();
             $table->timestamps();
         });
         Schema::table('child_identification', function($table) {

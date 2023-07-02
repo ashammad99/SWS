@@ -100,7 +100,7 @@ class PermissionController extends Controller
         ]);
 
         if ($status) {
-            return redirect()->back()->with('success', 'The Perimission Updated Successfully.');
+            return redirect()->route('roles.index')->with('success', 'The Perimission Updated Successfully.');
         } else {
             return redirect()->back()->with('failed', 'The Perimission Updated failed.');
         }

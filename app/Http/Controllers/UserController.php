@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Beneficiary;
+use App\Models\Governorate;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,8 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('users.user.user_create', compact('roles'));
+        $govs = Governorate::all();
+        return view('users.user.user_create', compact('roles','govs'));
     }
 
     /**
@@ -42,31 +44,32 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+//         dd($request->all());
         $request->validate([
-            'name' => 'required|string|max:100',
+            'name_en' => 'required|string|max:100',
+            'name_ar' => 'required|string|max:100',
+            'governorate_id' => 'required',
             'email' => 'required|max:250',
             'role' => 'required',
             'password' => 'required|min:8|max:100',
             'photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-
         $photo = 'default.jpg';
         if ($request->has('photo')) {
-
             $photo = time() . '.' . $request->photo->extension();
             $request->photo->move(public_path('assets/profile'), $photo);
         }
-
         $status = User::create([
-            'name' => $request->name,
+            'name_en' => $request->name_en,
+            'name_ar' => $request->name_ar,
+            'gov_id' => $request->governorate_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'photo' => $photo,
         ]);
         $status->syncRoles($request->role);
         if ($status) {
-            return redirect()->back()->with('success', 'User Created Successfully.');
+            return redirect()->route('users.index')->with('success', 'User Created Successfully.');
         } else {
             return redirect()->back()->with('failed', 'User Not Created Successfully.');
         }
@@ -85,7 +88,7 @@ class UserController extends Controller
         $request->validate([
             'photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-        $user = User::where('sr_id',$id)->first();
+        $user = User::where('id',$id)->first();
         $photo = $user->photo;
         if ($request->has('photo')) {
 
@@ -101,8 +104,8 @@ class UserController extends Controller
             $mode = 1;
         }
         $status = $user->update([
-            'sr_name_en' => $request->name_en,
-            'sr_name_ar' => $request->name_ar,
+            'name_en' => $request->name_en,
+            'name_ar' => $request->name_ar,
             'email' => $request->email,
             'username' => $request->username,
             'photo' => $photo,
@@ -131,8 +134,9 @@ class UserController extends Controller
     {
 
         $user = User::find($id);
-        $beneficiaries = Beneficiary::Where('sr_id',Auth::user()->sr_id)->get();
-        return view('profile', compact('user','beneficiaries'));
+//        $beneficiaries = Beneficiary::Where('sr_id',Auth::user()->sr_id)->get();
+//        return view('profile', compact('user','beneficiaries'));
+        return view('profile', compact('user'));
     }
 
 
@@ -178,12 +182,12 @@ class UserController extends Controller
         }
 
         $status = $user->update([
-            'sr_name_en' => $request->name_en,
-            'sr_name_ar' => $request->name_ar,
+            'name_en' => $request->name_en,
+            'name_ar' => $request->name_ar,
             'email' => $request->email,
             'photo' => $photo,
         ]);
-        dd($status);
+//        dd($status);
         if ($status) {
             return redirect()->back()->with('success', 'Account Settings has been updated');
         } else {

@@ -16,12 +16,12 @@ class CreateChildsEduStatusTable extends Migration
         Schema::create('childs_edu_status', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('child_id');
-            $table->enum('edu_level', ['Under School Age', 'Kindergarten', 'Primary School'])->nullable();
+            $table->enum('child_edu_level', ['Under School Age', 'Kindergarten', 'Primary School']);
             $table->string('school_name',255)->nullable();
             $table->boolean('need_lessons')->default(false)->nullable();
-            $table->string('intensive_lessons',100)->nullable();
+            $table->string('intensive_lessons',100)->nullable()->default(null);
             $table->integer('cost_lesson')->nullable();
-            $table->string('hobbies',255)->nullable();
+            $table->string('hobbies',255)->nullable()->default(null);
             $table->timestamps();
         });
 

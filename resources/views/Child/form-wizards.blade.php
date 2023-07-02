@@ -46,7 +46,11 @@
 @endsection
 @section('content')
     @php
-        $generated_id = rand(350000,1000000);
+
+        do {
+   $generated_code = rand(350000, 1000000);
+} while (\App\Models\ChildIdentification::where("child_code", "=", $generated_code)->first());
+
     @endphp
         <!-- row -->
     <div class="row">
@@ -64,7 +68,7 @@
                                     <label for="child_code" class="">Child Code</label>
                                     <input type="number" id="child_code" name="child_code"
                                            readonly
-                                           placeholder="Child Code" value="{{$generated_id}}"
+                                           placeholder="Child Code" value="{{$generated_code}}"
                                            class="form-control  @error('child_code') is-invalid @enderror"
                                     >
                                     @if($errors->has('child_code'))
@@ -86,8 +90,8 @@
                                 </div-->
                                 <div class="col-lg-5">
                                     <p class="mg-b-10">Select Category</p>
-                                    <select id="category_dropdown" class="form-control select2-no-search"
-                                            name="category" onChange="myNewFunction(this)" ;>
+                                    <select class="form-control select2-no-search"
+                                            name="category">
                                         <option disabled selected value> -- select an option --</option>
                                         @foreach($categories as $category)
                                             <option value="{{$category}}">{{$category}}</option>
@@ -156,14 +160,15 @@
                                                 Child DoB:
                                             </div>
                                         </div>
-                                        <input class="form-control" name="birth_date" id="dateMask"
-                                               placeholder="MM/DD/YYYY" type="date"
+                                        <input class="form-control" name="birth_date" id="dateMask2"
+                                               type="date"
                                                @error('birth_date') is-invalid @enderror">
                                         @if($errors->has('birth_date'))
                                             <div class="error"
                                                  style="color: red;">{{ $errors->first('birth_date') }}</div>
                                         @endif
                                     </div><!-- input-group -->
+
                                 </div><!-- col-4 -->
                                 <div class="col-md-5 mg-t-10 mg-md-t-0">
                                     <label for="sponsorship_category">Sponsorship Category</label>
@@ -191,33 +196,20 @@
                                 <div class="row row-xs">
                                     <!-- input-group -->
                                 </div><!-- col-4 -->
-
-                                {{--
-                                <div class="col-lg-5">
-                                    <p class="mg-b-10">Select CAT</p>
-                                    <select class="form-control select2-no-search" name="Category">
-                                        <option disabled selected value> -- select an option --</option>
-                                        @foreach($CATs as $CAT)
-                                            <option value="{{$CAT}}">{{$CAT}}</option>
-                                        @endforeach
-                                    </select>
-                                    @if($errors->has('Category'))
-                                        <div class="error" style="color: red;">{{ $errors->first('Category') }}</div>
-                                    @endif
-                                </div>
-                                --}}
-
                             </div>
                             <br>
                             <div class="row row-xs">
                                 <div class="form-check form-check-inline" style="">
                                     <b><label class="form-check-label"
                                               for="has_disability">has Disability?&nbsp;&nbsp;&nbsp;</label></b>
-                                    <input class="form-check-input" name="has_disability" type="checkbox"
-                                           id="has_disability"
-                                           value="">
+                                    <input type="checkbox" id="has_disability" name="has_disability" value="True" onclick="showDisabilityTypeInput()"
+                                           @error('has_disability') is-invalid @enderror">
+                                    @if($errors->has('has_disability'))
+                                        <div class="error"
+                                             style="color: red;">{{ $errors->first('has_disability') }}</div>
+                                    @endif
                                 </div>
-                                <div class="col-md-8">
+                                <div id="disability_div" style="display: none" class="col-md-8">
                                     <label for="disability_type">Disability Type</label>
                                     <input type="text" id="disability_type" name="disability_type"
                                            placeholder="Type Disability type here.."
@@ -274,8 +266,8 @@
                                                 father death date
                                             </div>
                                         </div>
-                                        <input class="form-control" name="death_date" id="dateMask"
-                                               placeholder="MM/DD/YYYY" type="text">
+                                        <input class="form-control" name="death_date" id="dateMask1"
+                                               placeholder="DD/MM/YYYY" type="date">
 
                                     </div><!-- input-group -->
                                 </div><!-- col-4 -->
@@ -334,7 +326,9 @@
                                     @endif
                                 </div>
                             </div>
+
                         </section>
+{{--
                         <h3></h3>
                         <section>
                             <br>
@@ -507,7 +501,7 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label>Select Governorate:</label>
-                                                    <select class="form-control select2-no-search" name="governate"
+                                                    <select class="form-control select2-no-search" name="governorate_id"
                                                             style="width: 100%">
                                                         <option disabled selected value>-- select an option --</option>
                                                         @foreach($governates as $governorate)
@@ -515,14 +509,14 @@
                                                                 value="{{$governorate->id}}">{{$governorate->gov_name_en}}</option>
                                                         @endforeach
                                                     </select>
-                                                    @if($errors->has('governate'))
+                                                    @if($errors->has('governorate_id'))
                                                         <div class="error"
-                                                             style="color: red;">{{ $errors->first('governate') }}</div>
+                                                             style="color: red;">{{ $errors->first('governorate_id') }}</div>
                                                     @endif
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label>Select Area:</label>
-                                                    <select class="form-control select2" name="area"
+                                                    <select class="form-control select2" name="area_id"
                                                             style="width: 100%">
                                                         <option disabled selected value>-- select an option --</option>
                                                         @foreach($areas as $area)
@@ -530,9 +524,9 @@
                                                                 value="{{$area->id}}">{{$area->area_name_en}}</option>
                                                         @endforeach
                                                     </select>
-                                                    @if($errors->has('area'))
+                                                    @if($errors->has('area_id'))
                                                         <div class="error"
-                                                             style="color: red;">{{ $errors->first('area') }}</div>
+                                                             style="color: red;">{{ $errors->first('area_id') }}</div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -562,7 +556,9 @@
                                     @endif
                                 </div>
                             </div>
+
                         </section>
+
                         <h3></h3>
                         <section>
                             <br>
@@ -714,7 +710,9 @@
                                 @endfor
                                 </tbody>
                             </table>
+
                         </section>
+
                         <h3></h3>
                         <section>
                             <br>
@@ -723,19 +721,19 @@
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <div class="row">
-                                            <label for="edu_level" class="col-form-label col-md-6">Select the
+                                            <label for="child_edu_level" class="col-form-label col-md-6">Select the
                                                 Educational Level</label>
                                             <div class="col-md-6">
-                                                <select id="edu_level" name="edu_level"
-                                                        class="form-control border-dark @error('edu_level') is-invalid @enderror">
+                                                <select id="child_edu_level" name="child_edu_level"
+                                                        class="form-control border-dark @error('child_edu_level') is-invalid @enderror">
+                                                    <option disabled selected value> -- select an option --</option>
                                                     @foreach($child_edu_level as $level)
                                                         <option value="{{$level}}">{{$level}}</option>
                                                     @endforeach
-
                                                 </select>
-                                                @if($errors->has('edu_level'))
+                                                @if($errors->has('child_edu_level'))
                                                     <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('edu_level') }}</div>
+                                                         style="color: red;">{{ $errors->first('child_edu_level') }}</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -744,10 +742,10 @@
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <div class="row">
-                                            <label for="edu_level" class="col-form-label col-md-6">School Name</label>
+                                            <label for="school_name" class="col-form-label col-md-6">School Name</label>
                                             <div class="col-md-6">
                                                 <input type="text" id="school_name" name="school_name"
-                                                       class="form-control @error('school_name') is-invalid @enderror">
+                                                       class="form-control border-dark @error('school_name') is-invalid @enderror">
                                                 @if($errors->has('school_name'))
                                                     <div class="invalid-feedback"
                                                          style="color: red;">{{ $errors->first('school_name') }}
@@ -765,12 +763,12 @@
                                             </label>
                                             <div class="col-md-6">
                                                 <div class="form-check">
-                                                    <input type="radio" id="need_yes" name="need_lessons" value="yes"
+                                                    <input type="radio" id="need_yes" name="need_lessons" value="1"
                                                            class="form-check-input">
                                                     <label for="need_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input type="radio" id="need_no" name="need_lessons" value="no"
+                                                    <input type="radio" id="need_no" name="need_lessons" value="0"
                                                            class="form-check-input">
                                                     <label for="need_no" class="form-check-label">No</label>
                                                 </div>
@@ -783,7 +781,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row row-xs">
+                            <div class="row row-xs" id="intensive_lessons_container">
                                 <label class="col-form-label col-md-2"><b>Intensive Lessons:</b></label>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="english_lesson" name="intensive_lessons[]"
@@ -806,7 +804,7 @@
                                     <label for="science_lesson" class="form-check-label">Science</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="custom_lesson" name="intensive_lessons[]" value="Other"
+                                    <input type="checkbox" id="custom_lesson_checkbox" name="intensive_lessons[]" value="Other"
                                            class="form-check-input">
                                     <label for="custom_lesson" class="form-check-label">Other</label>&nbsp;&nbsp;
                                     <input type="text" id="custom_lesson" name="custom_lesson"
@@ -814,7 +812,7 @@
                                 </div>
                             </div>
                             <br>
-                            <div class="row row-xs">
+                            <div class="row row-xs" id="lessons_cost">
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <div class="row">
@@ -822,7 +820,7 @@
                                                 improve Child Education(GBP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="cost_lesson" name="cost_lesson"
-                                                       class="form-control @error('members_count') is-invalid @enderror">
+                                                       class="form-control border-dark @error('members_count') is-invalid @enderror">
                                                 @if($errors->has('cost_lesson'))
                                                     <div class="invalid-feedback"
                                                          style="color: red;">{{ $errors->first('members_count') }}
@@ -867,14 +865,16 @@
                                     <label for="singing_hobbie" class="form-check-label">Singing</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="custom_hobbie" name="hobbies[]" value="Other"
+                                    <input type="checkbox" id="custom_hobbie_checkbox" name="hobbies[]" value="Other"
                                            class="form-check-input">
                                     <label for="custom_hobbie" class="form-check-label">Other</label>&nbsp;&nbsp;
                                     <input type="text" id="custom_hobbie" name="custom_hobbie"
                                            placeholder="Enter custom Hobbie" class="form-control border-dark">
                                 </div>
                             </div>
+
                         </section>
+
                         <h3></h3>
                         <section>
                             <br>
@@ -889,12 +889,12 @@
                                             <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="good_health_yes" name="good_health"
-                                                           value="yes" class="form-check-input">
+                                                           value="1" class="form-check-input">
                                                     <label for="good_health_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="good_health_no" name="good_health"
-                                                           value="no" class="form-check-input">
+                                                           value="0" class="form-check-input">
                                                     <label for="good_health_no" class="form-check-label">No</label>
                                                 </div>
                                             </div>
@@ -911,12 +911,12 @@
                                             <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="has_disease_yes" name="has_disease"
-                                                           value="yes" class="form-check-input">
+                                                           value="1" class="form-check-input">
                                                     <label for="has_disease_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="has_disease_no" name="has_disease"
-                                                           value="no" class="form-check-input">
+                                                           value="0" class="form-check-input">
                                                     <label for="has_disease_no" class="form-check-label">No</label>
                                                 </div>
                                             </div>
@@ -931,8 +931,8 @@
                                         <div class="row">
                                             <label for="medicines" class="col-form-label col-md-6">Medications</label>
                                             <div class="col-md-6">
-                                                    <textarea id="medications" name="medicines"
-                                                              class="form-control @error('medications') is-invalid @enderror"></textarea>
+                                                    <textarea id="medications" name="medications"
+                                                              class="form-control border-dark @error('medications') is-invalid @enderror"></textarea>
                                                 @if($errors->has('medications'))
                                                     <div class="invalid-feedback"
                                                          style="color: red;">{{ $errors->first('medications') }}</div>
@@ -1179,12 +1179,12 @@
                                             <label for="laptop_need" class="form-check-label">Laptop</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="custom_need" name="family_needs[]" value="Other"
+                                            <input type="checkbox" id="custom_need_checkbox" name="family_needs[]" value="Other"
                                                    class="form-check-input">
-                                            <label for="custom_need" class="form-check-label">Other</label>
+                                            <label for="custom_need_checkbox" class="form-check-label">Other</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input type="text" id="custom_need_text" name="custom_need"
+                                            <input type="text" id="custom_need" name="custom_need"
                                                    placeholder="Enter custom Need" class="form-control border-dark">
                                         </div>
                                     </div>
@@ -1248,199 +1248,203 @@
                                     </div>
                                 </div>
                             </div>
+
                         </section>
-                        <h3></h3>
-                        <section>
-                            <h2 style="background: #dde2ef;padding:7px">Resident Status of The Family</h2> <br>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="resident_status" class="col-form-label col-md-6">Resident
-                                                Status</label>
-                                            <div class="col-md-6">
-                                                <select id="resident_status" name="resident_status"
-                                                        class="form-control border-dark @error('resident_status') is-invalid @enderror">
-                                                    <option disabled selected value> -- select an option --</option>
-                                                    @foreach($resident_statuses as $status)
-                                                        <option value="{{$status}}">{{$status}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if($errors->has('resident_status'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('jobs_members') }}</div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="resident_type" class="col-form-label col-md-6">Resident
-                                                Type</label>
-                                            <div class="col-md-6">
-                                                <select id="resident_type" name="resident_type"
-                                                        class="form-control border-dark @error('resident_type') is-invalid @enderror">
-                                                    <option disabled selected value> -- select an option --</option>
-                                                    @foreach($resident_types as $type)
-                                                        <option value="{{$type}}">{{$type}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if($errors->has('resident_type'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('resident_type') }}</div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="resident_description" class="col-form-label col-md-6">Resident
-                                                Description</label>
-                                            <div class="col-md-6">
-                                                <select id="resident_description" name="resident_description"
-                                                        class="form-control border-dark @error('resident_type') is-invalid @enderror">
-                                                    <option disabled selected value> -- select an option --</option>
-                                                    @foreach($resident_descriptions as $desc)
-                                                        <option value="{{$desc}}">{{$desc}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if($errors->has('resident_description'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('resident_description') }}</div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="label"><b>Resident Needs</b></label><br>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="paints_need" name="resident_needs[]"
-                                                   value="Paints" class="form-check-input">
-                                            <label for="paints_need" class="form-check-label">Paints</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="doors_need" name="resident_needs[]" value="Doors"
-                                                   class="form-check-input">
-                                            <label for="doors_need" class="form-check-label">Doors</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="sewerage_network_need" name="resident_needs[]"
-                                                   value="Sewerage Network" class="form-check-input">
-                                            <label for="sewerage_network_need" class="form-check-label">Sewerage
-                                                Network</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="asbestos_need" name="resident_needs[]"
-                                                   value="Asbestos" class="form-check-input">
-                                            <label for="asbestos_need" class="form-check-label">Asbestos</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="electricity_need" name="resident_needs[]"
-                                                   value="Electricity" class="form-check-input">
-                                            <label for="electricity_need" class="form-check-label">Electricity</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 mb-2">
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="plaster_need" name="resident_needs[]"
-                                                   value="Plaster" class="form-check-input">
-                                            <label for="plaster_need" class="form-check-label">Plaster</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="windows_need" name="resident_needs[]"
-                                                   value="Windows" class="form-check-input">
-                                            <label for="windows_need" class="form-check-label">Windows</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="general_maintenance_need" name="resident_needs[]"
-                                                   value="General Maintenance" class="form-check-input">
-                                            <label for="general_maintenance_need" class="form-check-label">General
-                                                Maintenance</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="roof_need" name="resident_needs[]" value="Roof"
-                                                   class="form-check-input">
-                                            <label for="roof_need" class="form-check-label">Roof</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="new_room_need" name="resident_needs[]"
-                                                   value="New Room" class="form-check-input">
-                                            <label for="new_room_need" class="form-check-label">New Room</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="rent_cost" class="col-form-label col-md-6">Rent Cost(Monthly in
-                                                BGP)</label>
-                                            <div class="col-md-6">
-                                                <input type="number" id="rent_cost" name="rent_cost"
-                                                       class="form-control border-dark @error('rent_cost') is-invalid @enderror">
-                                                @if($errors->has('rent_cost'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('no_rooms') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="no_rooms" class="col-form-label col-md-6">No. of Rooms</label>
-                                            <div class="col-md-6">
-                                                <input type="number" id="no_rooms" name="no_rooms"
-                                                       class="form-control border-dark @error('no_rooms') is-invalid @enderror">
-                                                @if($errors->has('no_rooms'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('no_rooms') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-xs">
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="house_area" class="col-form-label col-md-6">House
-                                                Area(m^2)</label>
-                                            <div class="col-md-6">
-                                                <input type="number" id="house_area" name="house_area"
-                                                       class="form-control border-dark @error('house_area') is-invalid @enderror">
-                                                @if($errors->has('house_area'))
-                                                    <div class="invalid-feedback"
-                                                         style="color: red;">{{ $errors->first('house_area') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                      <h3></h3>
+                      <section>
+                          <h2 style="background: #dde2ef;padding:7px">Resident Status of The Family</h2> <br>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="resident_status" class="col-form-label col-md-6">Resident
+                                              Status</label>
+                                          <div class="col-md-6">
+                                              <select id="resident_status" name="resident_status"
+                                                      class="form-control border-dark @error('resident_status') is-invalid @enderror">
+                                                  <option disabled selected value> -- select an option --</option>
+                                                  @foreach($resident_statuses as $status)
+                                                      <option value="{{$status}}">{{$status}}</option>
+                                                  @endforeach
+                                              </select>
+                                              @if($errors->has('resident_status'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('jobs_members') }}</div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="resident_type" class="col-form-label col-md-6">Resident
+                                              Type</label>
+                                          <div class="col-md-6">
+                                              <select id="resident_type" name="resident_type"
+                                                      class="form-control border-dark @error('resident_type') is-invalid @enderror">
+                                                  <option disabled selected value> -- select an option --</option>
+                                                  @foreach($resident_types as $type)
+                                                      <option value="{{$type}}">{{$type}}</option>
+                                                  @endforeach
+                                              </select>
+                                              @if($errors->has('resident_type'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('resident_type') }}</div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="resident_description" class="col-form-label col-md-6">Resident
+                                              Description</label>
+                                          <div class="col-md-6">
+                                              <select id="resident_description" name="resident_description"
+                                                      class="form-control border-dark @error('resident_type') is-invalid @enderror">
+                                                  <option disabled selected value> -- select an option --</option>
+                                                  @foreach($resident_descriptions as $desc)
+                                                      <option value="{{$desc}}">{{$desc}}</option>
+                                                  @endforeach
+                                              </select>
+                                              @if($errors->has('resident_description'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('resident_description') }}</div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="container">
+                              <div class="row">
+                                  <div class="col-md-6">
+                                      <label class="label"><b>Resident Needs</b></label><br>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="paints_need" name="resident_needs[]"
+                                                 value="Paints" class="form-check-input">
+                                          <label for="paints_need" class="form-check-label">Paints</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="doors_need" name="resident_needs[]" value="Doors"
+                                                 class="form-check-input">
+                                          <label for="doors_need" class="form-check-label">Doors</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="sewerage_network_need" name="resident_needs[]"
+                                                 value="Sewerage Network" class="form-check-input">
+                                          <label for="sewerage_network_need" class="form-check-label">Sewerage
+                                              Network</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="asbestos_need" name="resident_needs[]"
+                                                 value="Asbestos" class="form-check-input">
+                                          <label for="asbestos_need" class="form-check-label">Asbestos</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="electricity_need" name="resident_needs[]"
+                                                 value="Electricity" class="form-check-input">
+                                          <label for="electricity_need" class="form-check-label">Electricity</label>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-12 mb-2">
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="plaster_need" name="resident_needs[]"
+                                                 value="Plaster" class="form-check-input">
+                                          <label for="plaster_need" class="form-check-label">Plaster</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="windows_need" name="resident_needs[]"
+                                                 value="Windows" class="form-check-input">
+                                          <label for="windows_need" class="form-check-label">Windows</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="general_maintenance_need" name="resident_needs[]"
+                                                 value="General Maintenance" class="form-check-input">
+                                          <label for="general_maintenance_need" class="form-check-label">General
+                                              Maintenance</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="roof_need" name="resident_needs[]" value="Roof"
+                                                 class="form-check-input">
+                                          <label for="roof_need" class="form-check-label">Roof</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                          <input type="checkbox" id="new_room_need" name="resident_needs[]"
+                                                 value="New Room" class="form-check-input">
+                                          <label for="new_room_need" class="form-check-label">New Room</label>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="rent_cost" class="col-form-label col-md-6">Rent Cost(Monthly in
+                                              BGP)</label>
+                                          <div class="col-md-6">
+                                              <input type="number" id="rent_cost" name="rent_cost"
+                                                     class="form-control border-dark @error('rent_cost') is-invalid @enderror">
+                                              @if($errors->has('rent_cost'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('no_rooms') }}
+                                                  </div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="no_rooms" class="col-form-label col-md-6">No. of Rooms</label>
+                                          <div class="col-md-6">
+                                              <input type="number" id="no_rooms" name="no_rooms"
+                                                     class="form-control border-dark @error('no_rooms') is-invalid @enderror">
+                                              @if($errors->has('no_rooms'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('no_rooms') }}
+                                                  </div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row row-xs">
+                              <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="house_area" class="col-form-label col-md-6">House
+                                              Area(m^2)</label>
+                                          <div class="col-md-6">
+                                              <input type="number" id="house_area" name="house_area"
+                                                     class="form-control border-dark @error('house_area') is-invalid @enderror">
+                                              @if($errors->has('house_area'))
+                                                  <div class="invalid-feedback"
+                                                       style="color: red;">{{ $errors->first('house_area') }}
+                                                  </div>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+
                         </section>
+--}}
                         <h3></h3>
                         <section>
                             <h2 style="background: #dde2ef;padding:7px">Attachments</h2> <br>
@@ -1450,7 +1454,6 @@
                                     <input type="file" class="form-control-file" id="child_personal_photo"
                                            name="child_personal_photo">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="birth_certificate"><strong>Last Birth Certificate (Photo Copy):</strong></label>
                                     <input type="file" class="form-control-file" id="birth_certificate"
@@ -1559,4 +1562,62 @@
         });
     </script>
     --}}
+    <script>
+        function showDisabilityTypeInput() {
+            var checkbox = document.getElementById("has_disability");
+            var disabilityTypeInput = document.getElementById("disability_div");
+
+            if (checkbox.checked) {
+                disabilityTypeInput.style.display = "block";
+            } else if(!(checkbox.checked)) {
+                disabilityTypeInput.style.display = "none";
+            }
+        }
+
+
+        $(document).ready(function() {
+            // Initially hide the Intensive Lessons and Cost fields
+            $('#intensive_lessons_container').hide();
+            $('#lessons_cost').hide();
+            $("#custom_lesson").prop("disabled", true);
+            $("#custom_hobbie").prop("disabled", true);
+            $("#custom_need").prop("disabled", true);
+
+            // Event listener for the radio buttons
+            $('input[name="need_lessons"]').on('change', function() {
+                if ($(this).val() === '1') {
+                    // Show the Intensive Lessons and Cost fields
+                    $('#intensive_lessons_container').show();
+                    $('#lessons_cost').show();
+                } else {
+                    // Hide the Intensive Lessons and Cost fields
+                    $('#intensive_lessons_container').hide();
+                    $('#lessons_cost').hide();
+                }
+            });
+        });
+        $(document).ready(function() {
+            $('#custom_lesson_checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#custom_lesson').prop('disabled', false);
+                } else {
+                    $('#custom_lesson').prop('disabled', true);
+                }
+            });
+            $('#custom_hobbie_checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#custom_hobbie').prop('disabled', false);
+                } else {
+                    $('#custom_hobbie').prop('disabled', true);
+                }
+            });
+            $('#custom_need_checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#custom_need').prop('disabled', false);
+                } else {
+                    $('#custom_need').prop('disabled', true);
+                }
+            });
+        });
+    </script>
 @endsection

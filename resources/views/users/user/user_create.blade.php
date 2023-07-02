@@ -26,7 +26,7 @@ SWS - Users - Create
 @section('content')
 <!-- row -->
 <div class="row row-sm">
-	
+
 	<div class="col-lg-8">
 		<div class="card">
 			<div class="card-body">
@@ -47,12 +47,19 @@ SWS - Users - Create
 								<input type="email"  id="Email" name="email" class="form-control" placeholder="Enter Email Address">
 							</div>
 							<div class="form-group">
-								<label for="Username">Username</label>
-								<input type="text"  id="Username" name="name" class="form-control" placeholder="Enter Username">
-								@if($errors->has('name'))
-								<div class="error" style="color: red;">{{ $errors->first('name') }}</div>
+								<label for="Username">English Name</label>
+								<input type="text"  id="Username" name="name_en" class="form-control" placeholder="Enter English Name">
+								@if($errors->has('name_en'))
+								<div class="error" style="color: red;">{{ $errors->first('name_en') }}</div>
 								@endif
 							</div>
+                            <div class="form-group">
+                                <label for="Username">Arabic Name</label>
+                                <input type="text"  id="Username" name="name_ar" class="form-control" placeholder="Enter Arabic Name">
+                                @if($errors->has('name_ar'))
+                                    <div class="error" style="color: red;">{{ $errors->first('name_ar') }}</div>
+                                @endif
+                            </div>
 							<div class="form-group">
 								<label for="Password">Password</label>
 								<input type="password" placeholder="at least 8 Characters" name="password" id="Password" class="form-control">
@@ -60,6 +67,21 @@ SWS - Users - Create
 								<div class="error" style="color: red;">{{ $errors->first('password') }}</div>
 								@endif
 							</div>
+                            <div class="form-group">
+                                <label>Select Governorate:</label>
+                                <select class="form-control select2-no-search" name="governorate_id"
+                                        style="width: 100%">
+                                    <option disabled selected value>-- select an option --</option>
+                                    @foreach($govs as $governorate)
+                                        <option
+                                            value="{{$governorate->id}}">{{$governorate->gov_name_en}}</option>
+                                    @endforeach
+                                </select>
+                                @if($errors->has('governorate_id'))
+                                    <div class="error"
+                                         style="color: red;">{{ $errors->first('governorate_id') }}</div>
+                                @endif
+                            </div>
 							<div class="form-group">
 								<label for="RePassword">Photo</label>
 								<input type="file" id="photo" name="photo" class="form-control">

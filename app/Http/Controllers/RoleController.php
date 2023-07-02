@@ -32,7 +32,7 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -45,17 +45,17 @@ class RoleController extends Controller
             'name' => $request->name,
         ]);
 
-        if($role) {
-            return redirect()->back()->with('success','The Role Created Successfully.');
+        if ($role) {
+            return redirect()->back()->with('success', 'The Role Created Successfully.');
         } else {
-            return redirect()->back()->with('failed','The Role Created failed.');
+            return redirect()->back()->with('failed', 'The Role Created failed.');
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -66,7 +66,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -78,8 +78,8 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -93,29 +93,29 @@ class RoleController extends Controller
             'name' => $request->name,
         ]);
 
-        if($update) {
-            return redirect()->back()->with('success','The Role Updated Successfully.');
+        if ($update) {
+            return redirect()->back()->with('success', 'The Role Updated Successfully.');
         } else {
-            return redirect()->back()->with('failed','The Role Updated failed.');
+            return redirect()->back()->with('failed', 'The Role Updated failed.');
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(request $request)
     {
         $id = $request->id;
         $role = Role::find($id);
-        $del =  $role->delete();
+        $del = $role->delete();
 
-        if($del) {
-            return redirect()->back()->with('success','The Role Deleted Successfully.');
+        if ($del) {
+            return redirect()->back()->with('success', 'The Role Deleted Successfully.');
         } else {
-            return redirect()->back()->with('failed','The Role Deleted failed.');
+            return redirect()->back()->with('failed', 'The Role Deleted failed.');
         }
     }
 
@@ -123,20 +123,19 @@ class RoleController extends Controller
     {
         $role = Role::find($id);
         $perimission = Permission::all();
-        return view('users.roles.edit_roles', compact('role','perimission'));
+        return view('users.roles.edit_roles', compact('role', 'perimission'));
     }
 
     public function perimissions_store(Request $request)
     {
-       
         $role_id = $request->role_id;
         $role = Role::find($role_id);
-       $status = $role->syncPermissions($request->permissions);
-        
-       if($status) {
-        return redirect()->back()->with('success','The Permissions Added Successfully To Role.');
-    } else {
-        return redirect()->back()->with('failed','The Permissions Not Added Successfully To Role.');
-    }
+        $status = $role->syncPermissions($request->permissions);
+
+        if ($status) {
+            return redirect()->route('roles.index')->with('success', 'The Permissions Added Successfully To Role.');
+        } else {
+            return redirect()->back()->with('failed', 'The Permissions Not Added Successfully To Role.');
+        }
     }
 }

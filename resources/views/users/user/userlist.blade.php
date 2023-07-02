@@ -58,7 +58,7 @@ SWS - Users List
 												<td>
 													<img alt="avatar" class="rounded-circle avatar-md mr-2" src="{{URL::asset('assets/profile/'.$user->photo)}}">
 												</td>
-												<td>{{$user->sr_name_en}}</td>
+												<td>{{$user->name_en}}</td>
 												<td>@foreach($user->roles as $role)
 
 													{{$role->name}}
@@ -83,12 +83,12 @@ SWS - Users List
 													<a href="#">{{$user->email}}</a>
 												</td>
 												<td>
-													<a href="{{route('users.editRole',$user->sr_id)}}" class="btn btn-sm btn-primary">
+													<a href="{{route('users.editRole',$user->id)}}" class="btn btn-sm btn-primary">
 														<i class="las la-cog"></i>
 													</a>
 
 													<a href="" data-id="{{ $user->id }}"
-														data-name="{{ $user->sr_name_en }}" data-target="#modaldemo1"
+														data-name="{{ $user->name_en }}" data-target="#modaldemo1"
 														data-toggle="modal" class="btn btn-sm btn-danger">
 														<i class="las la-trash"></i>
 													</a>

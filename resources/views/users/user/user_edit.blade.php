@@ -59,19 +59,19 @@ SWS - Users - Create
 				</div>
 				<div class="tab-content border-left border-bottom border-right border-top-0 p-4">
 					<div class="tab-pane active" id="settings">
-						<form action="{{route('users.updateRole',$user->sr_id)}}" method="post" enctype="multipart/form-data">
+						<form action="{{route('users.updateRole',$user->id)}}" method="post" enctype="multipart/form-data">
 							@csrf
 
                             <div class="form-group">
                                 <label for="name_en">User Arabic Name</label>
-                                <input type="text"  id="name_ar" name="name_ar" class="form-control" placeholder="Enter English Name" value="{{$user->sr_name_ar}}">
+                                <input type="text"  id="name_ar" name="name_ar" class="form-control" placeholder="Enter English Name" value="{{$user->name_ar}}">
                                 @if($errors->has('name_ar'))
                                     <div class="error" style="color: red;">{{ $errors->first('name_ar') }}</div>
                                 @endif
                             </div>
                             <div class="form-group">
                                 <label for="name_ar">User English Name</label>
-                                <input type="text"  id="name_en" name="name_en" class="form-control" placeholder="Enter Arabic Name" value="{{$user->sr_name_en}}">
+                                <input type="text"  id="name_en" name="name_en" class="form-control" placeholder="Enter Arabic Name" value="{{$user->name_en}}">
                                 @if($errors->has('name_en'))
                                     <div class="error" style="color: red;">{{ $errors->first('name_en') }}</div>
                                 @endif
