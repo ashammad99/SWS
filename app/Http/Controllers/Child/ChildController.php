@@ -107,6 +107,15 @@ class ChildController extends Controller
         'no_rooms' => 'required|integer',
         'house_area' => 'required|integer',
 */
+        //start of Attachments rules
+        'birth_certificate' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'child_personal_photo' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'education_certificate' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'father_id_card' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'guardian_id_card' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'medical_report' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'mother_id_card' => 'image|mimes:jpg,png,jpeg,gif,svg',
+        'various_photos.*' => 'image|mimes:jpg,png,jpeg,gif,svg',
     ];
 
     public function index()
@@ -259,18 +268,102 @@ class ChildController extends Controller
             $childsResidentStatus->fill($validatedData);
             $childsResidentStatus->save();
 */
-//            dd($request->child_personal_photo);
-            $file = $request->file('child_personal_photo');
-            if ($file) {
-//                $path = $file->store('uploads');
-                $dest_path = 'uploads/';
-                $attachment = new ChildsAttachment();
-                $attachment->child_id = $child->id;
-                $attachment->file_name = $file->getClientOriginalName();
-                $path = $request->file('child_personal_photo')->storeAs($dest_path,$file->getClientOriginalName());
-                $attachment->path = $path;
-                $attachment->save();
+
+
+
+            if($request->has('birth_certificate')) {
+                $imagefile = $request->file('birth_certificate');
+                $image_name1 = $child->id . '_birth_certificate'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/birth_certificates/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'birth_certificate',
+                    'path' => $image_name1
+                ]);
             }
+
+            if($request->has('child_personal_photo')) {
+                $imagefile = $request->file('child_personal_photo');
+                $image_name1 = $child->id . '_child_personal_photo'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/child_personal_photos/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'child_personal_photo',
+                    'path' => $image_name1
+                ]);
+            }
+
+            if($request->has('education_certificate')) {
+                $imagefile = $request->file('education_certificate');
+                $image_name1 = $child->id . '_education_certificate'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/education_certificates/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'education_certificate',
+                    'path' => $image_name1
+                ]);
+            }
+            if($request->has('father_id_card')) {
+                $imagefile = $request->file('father_id_card');
+                $image_name1 = $child->id . '_father_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/father_id_cards/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'father_id_card',
+                    'path' => $image_name1
+                ]);
+            }
+
+            if($request->has('guardian_id_card')) {
+                $imagefile = $request->file('guardian_id_card');
+                $image_name1 = $child->id . '_guardian_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/guardian_id_cards/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'guardian_id_card',
+                    'path' => $image_name1
+                ]);
+            }
+
+            if($request->has('medical_report')) {
+                $imagefile = $request->file('medical_report');
+                $image_name1 = $child->id . '_medical_report'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/medical_reports/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'medical_report',
+                    'path' => $image_name1
+                ]);
+            }
+
+            if($request->has('mother_id_card')) {
+                $imagefile = $request->file('mother_id_card');
+                $image_name1 = $child->id . '_mother_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                Storage::disk('uploads')->putFileAs('/children/mother_id_cards/', $imagefile, $image_name1);
+                ChildsAttachment::create([
+                    'child_id' => $child->id,
+                    'file_name' => 'mother_id_card',
+                    'path' => $image_name1
+                ]);
+            }
+
+//            dd($request->file('various_photos'));
+            if($request->has('various_photos')) {
+                $i = 1;
+                $x = $request->file('various_photos');
+                foreach ($x as $imagefile) {
+                    $image_name1 = $child->id . '_various_photo'. $i  . '.' . $imagefile->getClientOriginalExtension();
+                    Storage::disk('uploads')->putFileAs('/children/various_photos/', $imagefile, $image_name1);
+                    ChildsAttachment::create([
+                        'child_id' => $child->id,
+                        'file_name' => 'various_photo'.$i,
+                        'path' => $image_name1
+                    ]);
+                    $i++;
+                }
+            }
+
+
 
             DB::commit();
             dd("success");

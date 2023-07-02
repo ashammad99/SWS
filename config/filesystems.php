@@ -46,7 +46,7 @@ return [
         //this is custom disk
         'uploads' => [
           'driver' => 'local', //locally disk in the same project
-            'root' =>   public_path('uploads'), //root: path of disk in the app//public_path: return the main public folder
+            'root' =>   public_path('app/public/uploads'), //root: path of disk in the app//public_path: return the main public folder
             'url' => env('APP_URL').'uploads', //APP_URL --> http:\\localhost
         ],
 

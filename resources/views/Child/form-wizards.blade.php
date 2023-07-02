@@ -67,7 +67,7 @@
                                 <div class="form-group">
                                     <label for="child_code" class="">Child Code</label>
                                     <input type="number" id="child_code" name="child_code"
-                                           readonly
+
                                            placeholder="Child Code" value="{{$generated_code}}"
                                            class="form-control  @error('child_code') is-invalid @enderror"
                                     >
@@ -1485,7 +1485,7 @@
                                     <label for="various_photos"><strong>Various Photos Including Surrounding
                                             Environment:</strong></label>
                                     <input type="file" class="form-control-file" id="various_photos"
-                                           name="various_photos" multiple>
+                                           name="various_photos[]" multiple>
                                 </div>
 
                                 <div class="form-group">

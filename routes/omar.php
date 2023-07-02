@@ -39,6 +39,7 @@ Route::group(['middleware' => ['role:Admin']], function () {
     Route::resource('/users', UserController::class);
     Route::get('/users/{user}', [UserController::class, 'destroy'])->name('users.delete');
     Route::get('/users/role/{id}', [UserController::class, 'edit_userRole'])->name('users.editRole');
+    Route::get('/users/{id}/restore', [UserController::class,'restore'])->name('users.restore');
     Route::post('/users/role/update/{id}', [UserController::class, 'update_userRole'])->name('users.updateRole');
     Route::post('/users/role/perimission/show/{id}', [UserController::class, 'getAjax'])->name('users.showRolePermission');
 });

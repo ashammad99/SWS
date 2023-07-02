@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles', 'permissions')->get();
+        $users = User::withTrashed('roles', 'permissions')->get();
         // dd($users->roles);
         return view('users.user.userlist', compact('users'));
     }
@@ -91,7 +91,6 @@ class UserController extends Controller
         $user = User::where('id',$id)->first();
         $photo = $user->photo;
         if ($request->has('photo')) {
-
             $photo = time() . '.' . $request->photo->extension();
             $request->photo->move(public_path('assets/profile'), $photo);
         }
@@ -102,6 +101,9 @@ class UserController extends Controller
             $mode = 0;
         } else {
             $mode = 1;
+        }
+        if ($request->has('governorate_id')) {
+                $user->update(['gov_id'=>$request->governorate_id]);
         }
         $status = $user->update([
             'name_en' => $request->name_en,
@@ -136,6 +138,7 @@ class UserController extends Controller
         $user = User::find($id);
 //        $beneficiaries = Beneficiary::Where('sr_id',Auth::user()->sr_id)->get();
 //        return view('profile', compact('user','beneficiaries'));
+
         return view('profile', compact('user'));
     }
 
@@ -144,9 +147,10 @@ class UserController extends Controller
     {
         /*dd($id);*/
         $roles = Role::all();
-        $user = User::where('sr_id', $id)->first();
+        $user = User::where('id', $id)->first();
         // $roleUser = Role::where('id',$user->roles->name)->first();
-        return view('users.user.user_edit', compact('user', 'roles'));
+        $govs = Governorate::all();
+        return view('users.user.user_edit', compact('user', 'roles','govs'));
     }
 
     /**
@@ -214,7 +218,17 @@ class UserController extends Controller
             return redirect()->back()->with('failed', 'The User Delete failed.');
         }
     }
+    public function restore($id)
+    {
+        // Find the trashed user by ID
+        $user = User::onlyTrashed()->findOrFail($id);
 
+        // Restore the user
+        $user->restore();
+
+        // Redirect back or perform any other actions
+        return redirect()->back()->with('success', 'User has been restored successfully.');
+    }
     public function getAjax()
     {
         $id = $_POST('id');

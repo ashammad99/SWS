@@ -37,8 +37,8 @@ SWS - Users - Create
 						<div class="d-flex justify-content-between mg-b-20">
 							<div>
 								<h5 class="main-profile-name">{{$user->name}}</h5>
-								<p class="main-profile-name-text">Social Researcher</p>
-							</div>
+                                <p class="main-profile-name-text">{{Auth::user()->roles->pluck('name')[0]}}</p>
+                            </div>
 						</div>
 
 					</div><!-- main-profile-overview -->
@@ -104,6 +104,21 @@ SWS - Users - Create
 								<div class="error" style="color: red;">{{ $errors->first('photo') }}</div>
 								@endif
 							</div>
+                            <div class="form-group">
+                                <label>Select Governorate:</label>
+                                <select class="form-control select2-no-search" name="governorate_id"
+                                        style="width: 100%">
+                                    <option disabled selected value>-- select an option --</option>
+                                    @foreach($govs as $governorate)
+                                        <option
+                                            value="{{$governorate->id}}">{{$governorate->gov_name_en}}</option>
+                                    @endforeach
+                                </select>
+                                @if($errors->has('governorate_id'))
+                                    <div class="error"
+                                         style="color: red;">{{ $errors->first('governorate_id') }}</div>
+                                @endif
+                            </div>
 							<div class="form-group">
 								<div class="row row-sm">
 									<div class="col-lg-4 mg-t-20 mg-lg-t-0">
