@@ -42,9 +42,9 @@ class Guardian extends Model
         return $this->belongsTo(Area::class);
     }
 
-    public function children()
+    public function child()
     {
-        return $this->hasMany(ChildIdentification::class, 'child_id');
+        return $this->belongsTo(ChildIdentification::class,'child_id','id');
     }
     public static function rules()
     {

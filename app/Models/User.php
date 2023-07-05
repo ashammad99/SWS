@@ -62,5 +62,10 @@ class User extends Authenticatable
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function children()
+    {
+        return $this->hasMany(ChildIdentification::class,'sr_id');
+    }
 }
 

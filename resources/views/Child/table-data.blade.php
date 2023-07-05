@@ -63,39 +63,36 @@
                             <thead>
                             <tr>
                                 <th class="wd-10p border-bottom-0">Code</th>
-                                <th class="wd-15p border-bottom-0">Beneficiary Name</th>
-                                <th class="wd-15p border-bottom-0">Is VIP</th>
+                                <th class="wd-15p border-bottom-0">Child Name</th>
                                 <th class="wd-15p border-bottom-0">Category</th>
-                                <th class="wd-15p border-bottom-0">Gender</th>
-                                <th class="wd-15p border-bottom-0">Orphan DOB</th>
                                 <th class="wd-20p border-bottom-0">Guardian Name</th>
-                                <th class="wd-15p border-bottom-0">Relation To Child</th>
+                                <th class="wd-15p border-bottom-0">Rel To Child</th>
                                 <th class="wd-10p border-bottom-0">Scale Of Poverty</th>
-                                <th class="wd-25p border-bottom-0">Category</th>
+                                <th class="wd-25p border-bottom-0">Sponsorship Category</th>
                                 <th class="wd-25p border-bottom-0">Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($orphans as $orphan)
+                            @foreach($children as $child)
                                 <tr>
-                                    <td>{{$orphan->NO_ORPHAN_CODE}}</td>
-                                    <td>{{$orphan->Orphan_Name_En}}</td>
-                                    <td>@if($orphan->is_vip) True @else False @endif</td>
-                                    <td>{{$orphan->Category}}</td>
-                                    <td>{{$orphan->Gender}}</td>
-                                    <td>{{$orphan->ORPHAN_DOB}}</td>
-                                    <td>{{$orphan->Guardian->Guardian_En}}</td>
-                                    <td>{{$orphan->Guardian->REL_TO_CHILD_EN}}</td>
-                                    <td>{{$orphan->Scale_Of_poverty}}</td>
-                                    <td>{{$orphan->CAT}}</td>
+                                    <td>{{$child->child_code}}</td>
+                                    <td>{{$child->child_fullName_en}}</td>
+                                    <td>{{$child->category}}</td>
+                                    <td>{{$child->guardian->guardian_fullName_en}}</td>
+                                    <td>{{$child->guardian->rel_to_en}}</td>
+                                    <td>{{$child->scale_of_poverty}}</td>
+                                    <td>{{$child->sponsorship_category}}</td>
                                 <td>
-                                    <a href="{{route('child.edit',$orphan->NO_ORPHAN_CODE)}}" class="btn btn-sm btn-primary">
+                                    <a href="{{route('child.edit',$child->id)}}" class="btn btn-sm btn-primary">
                                         <i class="las la-cog"></i>
                                     </a>
                                     <a href="" data-id=""
                                        data-name="" data-target="#modaldemo1"
                                        data-toggle="modal" class="btn btn-sm btn-danger">
                                         <i class="las la-trash"></i>
+                                    </a>
+                                    <a href="{{route('child.profile',$child->id)}}" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-user"></i>
                                     </a>
                                 </td>
                                {{--  <td>

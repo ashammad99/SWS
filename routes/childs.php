@@ -13,7 +13,8 @@ Route::group(
             '/child',
             ChildController::class
         );
-
+        Route::get('/profile', [ChildController::class, 'show_profile'])
+            ->name('child.profile');
 //        Route::get('/', [ChildController::class, 'index'])
 //            ->name('beneficiary.index');
 //

@@ -44,11 +44,12 @@ class ChildController extends Controller
         'father_fullName_ar' => 'required|string',
         'father_id_no' => 'required|integer|digits:9',
         'death_date' => 'nullable|date',
+        'has_disability' => 'boolean',
         'disability_type' => 'nullable|string',
         'sponsorship_category' => 'required|string',
         'scale_of_poverty' => 'required|in:VERY POOR,SEVERE,POOR',
+/*
 
-        /*
         //Start Guardian rules
         'guardian_fullName_en' => 'required|string',
         'guardian_fullName_ar' => 'required|string',
@@ -106,7 +107,7 @@ class ChildController extends Controller
         'rent_cost' => 'nullable|integer',
         'no_rooms' => 'required|integer',
         'house_area' => 'required|integer',
-*/
+
         //start of Attachments rules
         'birth_certificate' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'child_personal_photo' => 'image|mimes:jpg,png,jpeg,gif,svg',
@@ -116,14 +117,17 @@ class ChildController extends Controller
         'medical_report' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'mother_id_card' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'various_photos.*' => 'image|mimes:jpg,png,jpeg,gif,svg',
+*/
     ];
 
     public function index()
     {
-//        $beneficiaries     = Beneficiary::with('Guardian')->where('sr_id', '=', Auth::user()->sr_id)->get();
-        //$Child = Orphan::with('Guardian')->find(2816);
-//        dd($orphans);
-        return view('Child.table-data');
+        $children = ChildIdentification::with('guardian')->find(3)->get();
+        $user = User::with('children')->find(1);
+//        dd($children->guardian);
+//        $guardian = Guardian::with('child')->find(1);
+//        dd($guardian);
+        return view('Child.table-data', compact('children'));
     }
 
     public function create()
@@ -223,7 +227,7 @@ class ChildController extends Controller
         try {
             $child = ChildIdentification::create($validatedData);
 
-            /*
+/*
             $guardian = new Guardian();
             $guardian->child_id = $child->id;
             $guardian->fill($validatedData);
@@ -267,14 +271,13 @@ class ChildController extends Controller
 
             $childsResidentStatus->fill($validatedData);
             $childsResidentStatus->save();
+
 */
-
-
-
-            if($request->has('birth_certificate')) {
+            if ($request->has('birth_certificate')) {
                 $imagefile = $request->file('birth_certificate');
-                $image_name1 = $child->id . '_birth_certificate'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_birth_certificate' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/birth_certificates/', $imagefile, $image_name1);
+
                 ChildsAttachment::create([
                     'child_id' => $child->id,
                     'file_name' => 'birth_certificate',
@@ -282,9 +285,9 @@ class ChildController extends Controller
                 ]);
             }
 
-            if($request->has('child_personal_photo')) {
+            if ($request->has('child_personal_photo')) {
                 $imagefile = $request->file('child_personal_photo');
-                $image_name1 = $child->id . '_child_personal_photo'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_child_personal_photo' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/child_personal_photos/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -293,9 +296,9 @@ class ChildController extends Controller
                 ]);
             }
 
-            if($request->has('education_certificate')) {
+            if ($request->has('education_certificate')) {
                 $imagefile = $request->file('education_certificate');
-                $image_name1 = $child->id . '_education_certificate'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_education_certificate' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/education_certificates/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -303,9 +306,9 @@ class ChildController extends Controller
                     'path' => $image_name1
                 ]);
             }
-            if($request->has('father_id_card')) {
+            if ($request->has('father_id_card')) {
                 $imagefile = $request->file('father_id_card');
-                $image_name1 = $child->id . '_father_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_father_id_card' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/father_id_cards/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -314,9 +317,9 @@ class ChildController extends Controller
                 ]);
             }
 
-            if($request->has('guardian_id_card')) {
+            if ($request->has('guardian_id_card')) {
                 $imagefile = $request->file('guardian_id_card');
-                $image_name1 = $child->id . '_guardian_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_guardian_id_card' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/guardian_id_cards/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -325,9 +328,9 @@ class ChildController extends Controller
                 ]);
             }
 
-            if($request->has('medical_report')) {
+            if ($request->has('medical_report')) {
                 $imagefile = $request->file('medical_report');
-                $image_name1 = $child->id . '_medical_report'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_medical_report' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/medical_reports/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -336,9 +339,9 @@ class ChildController extends Controller
                 ]);
             }
 
-            if($request->has('mother_id_card')) {
+            if ($request->has('mother_id_card')) {
                 $imagefile = $request->file('mother_id_card');
-                $image_name1 = $child->id . '_mother_id_card'  . '.' . $imagefile->getClientOriginalExtension();
+                $image_name1 = $child->id . '_mother_id_card' . '.' . $imagefile->getClientOriginalExtension();
                 Storage::disk('uploads')->putFileAs('/children/mother_id_cards/', $imagefile, $image_name1);
                 ChildsAttachment::create([
                     'child_id' => $child->id,
@@ -348,25 +351,22 @@ class ChildController extends Controller
             }
 
 //            dd($request->file('various_photos'));
-            if($request->has('various_photos')) {
+            if ($request->has('various_photos')) {
                 $i = 1;
                 $x = $request->file('various_photos');
                 foreach ($x as $imagefile) {
-                    $image_name1 = $child->id . '_various_photo'. $i  . '.' . $imagefile->getClientOriginalExtension();
+                    $image_name1 = $child->id . '_various_photo' . $i . '.' . $imagefile->getClientOriginalExtension();
                     Storage::disk('uploads')->putFileAs('/children/various_photos/', $imagefile, $image_name1);
                     ChildsAttachment::create([
                         'child_id' => $child->id,
-                        'file_name' => 'various_photo'.$i,
+                        'file_name' => 'various_photo' . $i,
                         'path' => $image_name1
                     ]);
                     $i++;
                 }
             }
 
-
-
             DB::commit();
-            dd("success");
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -384,19 +384,54 @@ class ChildController extends Controller
 
     public function edit($id)
     {
-        $beneficary = Beneficiary::with('Governate', 'Guardian')->find($id);
-        //dd($beneficary->Guardian->BankInfo);
-
-//        $bank_info = $beneficary->Guardian()->with('BankInfo')->get();
-//dd($bank_info);
-        $scales = self::getEnumValues('beneficiaries', 'Scale_Of_poverty');
-        $categories = self::getEnumValues('beneficiaries', 'Category');
+        $child = ChildIdentification::find($id);
+//        dd($child->family->relatives[1]['name']);
+//        dd(json_encode($child->family->relatives));
+        $json_data = $child->family->relatives;
+//        foreach ($json_data as $a){
+//            dd($a['name']);
+//        }
+        /*
+        for ($i = 1; $i <= 15; $i++) {
+            if($json_data[2]['sex'] == "M"){
+                dd( "True");
+            }else {
+                dd("False");
+            }
+        }
+        */
+//        dd($json_data[1]['sex']);
+        foreach($json_data as $data){
+//            dd($data);
+    }
+//        dd($child);
+        $scales = self::getEnumValues('child_identification', 'Scale_Of_poverty');
+        $categories = self::getEnumValues('child_identification', 'category');
         $governates = DB::table('governorates')->get();
-        $camps = DB::table('camps')->get();
-        $relationsAr = self::getEnumValues('Guardian', 'REL_TO_CHILD_AR');
-        $relationsEN = self::getEnumValues('Guardian', 'REL_TO_CHILD_EN');
-        $CATs = self::getEnumValues('beneficiaries', 'CAT');
-        return view('Child.edit', compact('beneficary', 'scales', 'categories', 'governates', 'camps', 'relationsAr', 'relationsEN', 'CATs'));
+        $areas = DB::table('areas')->get();
+        $relationsAr = self::getEnumValues('guardians', 'rel_to_ar');
+        $relationsEN = self::getEnumValues('guardians', 'rel_to_en');
+        $mother_martial_status = self::getEnumValues('child_identification', 'mother_martial_status');
+        $guardian_martial_status = self::getEnumValues('guardians', 'guardian_martial_status');
+        $works = self::getEnumValues('guardians', 'work');
+        $edu_levels = self::getEnumValues('guardians', 'edu_level');
+        $monthly_salary = self::getEnumValues('guardians', 'monthly_salary');
+        $child_edu_level = self::getEnumValues('childs_edu_status', 'child_edu_level');
+
+        $jobs_members = self::getEnumValues('childs_economic_status', 'jobs_members');
+        $periodic_sponsorships = self::getEnumValues('childs_economic_status', 'periodic_sponsorships');
+        $irregular_aids = self::getEnumValues('childs_economic_status', 'irregular_aids');
+        $resident_statuses = self::getEnumValues('childs_resident_status', 'resident_status');
+        $resident_types = self::getEnumValues('childs_resident_status', 'resident_type');
+        $resident_descriptions = self::getEnumValues('childs_resident_status', 'resident_description');
+        return view('Child.edit', compact('child','scales',
+        'categories', 'governates', 'areas', 'relationsAr', 'relationsEN',
+        'mother_martial_status', 'guardian_martial_status', 'works',
+        'edu_levels', 'monthly_salary', 'child_edu_level', 'jobs_members'
+        , 'periodic_sponsorships', 'irregular_aids', 'resident_statuses', 'resident_types', 'resident_descriptions',
+        'json_data'
+    ));
+
     }
 
     public function update(Request $request, $id)
@@ -437,6 +472,11 @@ class ChildController extends Controller
         ]);
 //        dd('success');
         return redirect()->back();
+    }
+
+    public function show_profile($id)
+    {
+
     }
 
     public static function getEnumValues($table, $column)

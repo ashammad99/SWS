@@ -66,10 +66,10 @@
                             <div class="row row-xs">
                                 <div class="form-group">
                                     <label for="child_code" class="">Child Code</label>
-                                    <input type="number" id="child_code" name="child_code"
+                                    <input type="number" id="child_code"  readonly name="child_code"
 
                                            placeholder="Child Code" value="{{$generated_code}}"
-                                           class="form-control  @error('child_code') is-invalid @enderror"
+                                           class="form-control border-dark @error('child_code') is-invalid @enderror"
                                     >
                                     @if($errors->has('child_code'))
                                         <div class="error"
@@ -79,7 +79,7 @@
                                 <div class="form-group">
                                     <label for="child_id_no" class="">Child ID</label>
                                     <input type="number" id="child_id_no" name="child_id_no"
-                                           class="form-control  @error('child_id_no') is-invalid @enderror">
+                                           class="form-control border-dark  @error('child_id_no') is-invalid @enderror">
                                     @if($errors->has('child_id_no'))
                                         <div class="error" style="color: red;">{{ $errors->first('child_id_no') }}</div>
                                     @endif
@@ -107,7 +107,7 @@
                                     <label for="child_fullName_en">Child English Name</label>
                                     <input type="text" id="child_fullName_en" name="child_fullName_en"
                                            placeholder="Child English Name"
-                                           class="form-control @error('child_fullName_en') is-invalid @enderror">
+                                           class="form-control border-dark @error('child_fullName_en') is-invalid @enderror">
                                     @if($errors->has('child_fullName_en'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('child_fullName_en') }}</div>
@@ -117,7 +117,7 @@
                                     <label for="child_fullName_ar">Child Arabic Name</label>
                                     <input type="text" id="child_fullName_ar" name="child_fullName_ar"
                                            placeholder="Child Arabic Name"
-                                           class="form-control @error('child_fullName_ar') is-invalid @enderror">
+                                           class="form-control border-dark @error('child_fullName_ar') is-invalid @enderror">
                                     @if($errors->has('child_fullName_ar'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('child_fullName_ar') }}</div>
@@ -134,7 +134,6 @@
                                         <br>
                                         <input type="radio" id="female" name="gender" value="Female">
                                         <label for="female">Female</label>
-
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -160,7 +159,7 @@
                                                 Child DoB:
                                             </div>
                                         </div>
-                                        <input class="form-control" name="birth_date" id="dateMask2"
+                                        <input class="form-control " name="birth_date" id="dateMask2"
                                                type="date"
                                                @error('birth_date') is-invalid @enderror">
                                         @if($errors->has('birth_date'))
@@ -174,7 +173,7 @@
                                     <label for="sponsorship_category">Sponsorship Category</label>
                                     <input type="text" id="sponsorship_category" name="sponsorship_category"
                                            placeholder="Sponsorship Category"
-                                           class="form-control @error('sponsorship_category') is-invalid @enderror">
+                                           class="form-control border-dark @error('sponsorship_category') is-invalid @enderror">
                                     @if($errors->has('sponsorship_category'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('sponsorship_category') }}</div>
@@ -202,7 +201,7 @@
                                 <div class="form-check form-check-inline" style="">
                                     <b><label class="form-check-label"
                                               for="has_disability">has Disability?&nbsp;&nbsp;&nbsp;</label></b>
-                                    <input type="checkbox" id="has_disability" name="has_disability" value="True" onclick="showDisabilityTypeInput()"
+                                    <input type="checkbox" id="has_disability" name="has_disability" value="1" onclick="showDisabilityTypeInput()"
                                            @error('has_disability') is-invalid @enderror">
                                     @if($errors->has('has_disability'))
                                         <div class="error"
@@ -213,7 +212,7 @@
                                     <label for="disability_type">Disability Type</label>
                                     <input type="text" id="disability_type" name="disability_type"
                                            placeholder="Type Disability type here.."
-                                           class="form-control @error('disability_type') is-invalid @enderror">
+                                           class="form-control border-dark @error('disability_type') is-invalid @enderror">
                                     @if($errors->has('disability_type'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('disability_type') }}</div>
@@ -229,7 +228,7 @@
                                     <label for="father_fullName_en">Father Name English</label>
                                     <input type="text" id="father_fullName_en" name="father_fullName_en"
                                            placeholder="Father English Name"
-                                           class="form-control @error('father_fullName_en') is-invalid @enderror">
+                                           class="form-control border-dark @error('father_fullName_en') is-invalid @enderror">
                                     @if($errors->has('father_fullName_en'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('father_fullName_en') }}</div>
@@ -239,7 +238,7 @@
                                     <label for="father_fullName_ar">Father Name Arabic</label>
                                     <input type="text" id="father_fullName_ar" name="father_fullName_ar"
                                            placeholder="Father Name Arabic"
-                                           class="form-control @error('father_fullName_ar') is-invalid @enderror">
+                                           class="form-control border-dark @error('father_fullName_ar') is-invalid @enderror">
                                     @if($errors->has('father_fullName_ar'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('father_fullName_ar') }}</div>
@@ -252,7 +251,7 @@
                                 <div class="form-group col-lg-3">
                                     <label for="father_id_no" class="">Father ID</label>
                                     <input type="number" id="father_id_no" name="father_id_no"
-                                           class="form-control  @error('father_id_no') is-invalid @enderror">
+                                           class="form-control border-dark  @error('father_id_no') is-invalid @enderror">
                                     @if($errors->has('father_id_no'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('father_id_no') }}</div>
@@ -280,7 +279,7 @@
                                     <label for="mother_fullName_en">Mother Name English</label>
                                     <input type="text" id="mother_fullName_en" name="mother_fullName_en"
                                            placeholder="Mother English Name"
-                                           class="form-control @error('mother_fullName_en') is-invalid @enderror">
+                                           class="form-control border-dark @error('mother_fullName_en') is-invalid @enderror">
                                     @if($errors->has('mother_fullName_en'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('mother_fullName_en') }}</div>
@@ -290,7 +289,7 @@
                                     <label for="mother_fullName_ar">Mother Name Arabic</label>
                                     <input type="text" id="mother_fullName_ar" name="mother_fullName_ar"
                                            placeholder="Mother Name Arabic"
-                                           class="form-control @error('mother_fullName_ar') is-invalid @enderror">
+                                           class="form-control border-dark @error('mother_fullName_ar') is-invalid @enderror">
                                     @if($errors->has('mother_fullName_ar'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('father_fullName_ar') }}</div>
@@ -302,7 +301,7 @@
                                 <div class="form-group col-lg-3">
                                     <label for="mother_id_no" class="">Mother ID</label>
                                     <input type="number" id="mother_id_no" name="mother_id_no"
-                                           class="form-control  @error('mother_id_no') is-invalid @enderror">
+                                           class="form-control border-dark @error('mother_id_no') is-invalid @enderror">
                                     @if($errors->has('mother_id_no'))
                                         <div class="error"
                                              style="color: red;">{{ $errors->first('mother_id_no') }}</div>
@@ -328,8 +327,9 @@
                             </div>
 
                         </section>
-{{--
+
                         <h3></h3>
+                        {{--
                         <section>
                             <br>
                             <h2 style="background: #dde2ef;padding:7px">Guardian Information</h2>
@@ -1441,12 +1441,11 @@
                                   </div>
                               </div>
                           </div>
-
-
                         </section>
---}}
                         <h3></h3>
+                         --}}
                         <section>
+
                             <h2 style="background: #dde2ef;padding:7px">Attachments</h2> <br>
                             <div class="container">
                                 <div class="form-group">
