@@ -42,14 +42,14 @@ return [
             'visibility' => 'public',
         ],
 
-
+/*
         //this is custom disk
         'uploads' => [
           'driver' => 'local', //locally disk in the same project
             'root' =>   public_path('app/public/uploads'), //root: path of disk in the app//public_path: return the main public folder
             'url' => env('APP_URL').'uploads', //APP_URL --> http:\\localhost
         ],
-
+*/
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

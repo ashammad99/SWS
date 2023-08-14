@@ -66,7 +66,7 @@
                             <div class="row row-xs">
                                 <div class="form-group">
                                     <label for="child_code" class="">Child Code</label>
-                                    <input type="number" id="child_code"  readonly name="child_code"
+                                    <input type="number" id="child_code" readonly name="child_code"
 
                                            placeholder="Child Code" value="{{$generated_code}}"
                                            class="form-control border-dark @error('child_code') is-invalid @enderror"
@@ -201,7 +201,8 @@
                                 <div class="form-check form-check-inline" style="">
                                     <b><label class="form-check-label"
                                               for="has_disability">has Disability?&nbsp;&nbsp;&nbsp;</label></b>
-                                    <input type="checkbox" id="has_disability" name="has_disability" value="1" onclick="showDisabilityTypeInput()"
+                                    <input type="checkbox" id="has_disability" name="has_disability" value="1"
+                                           onclick="showDisabilityTypeInput()"
                                            @error('has_disability') is-invalid @enderror">
                                     @if($errors->has('has_disability'))
                                         <div class="error"
@@ -245,7 +246,6 @@
                                     @endif
                                 </div>
                             </div>
-
                             <br>
                             <div class="row row-xs">
                                 <div class="form-group col-lg-3">
@@ -329,7 +329,6 @@
                         </section>
 
                         <h3></h3>
-                        {{--
                         <section>
                             <br>
                             <h2 style="background: #dde2ef;padding:7px">Guardian Information</h2>
@@ -663,14 +662,14 @@
                                                    placeholder="First Name"/></td>
                                         <td>
                                             <select name="relatives[{{ $i }}][sex]">
-                                                <option disabled selected value>-- select an option --</option>
+                                                <option selected value="">-- select an option --</option>
                                                 <option value="M">Male</option>
                                                 <option value="F">Female</option>
                                             </select>
                                         </td>
                                         <td>
                                             <select name="relatives[{{ $i }}][relation]">
-                                                <option disabled selected value>-- select an option --</option>
+                                                <option selected value>-- select an option --</option>
                                                 <option value="Mother">Mother</option>
                                                 <option value="Brother">Brother</option>
                                                 <option value="Sister">Sister</option>
@@ -683,7 +682,7 @@
                                         <td><input type="date" name="relatives[{{ $i }}][dob]"/></td>
                                         <td>
                                             <select name="relatives[{{ $i }}][edu_level]">
-                                                <option disabled selected value>-- select an option --</option>
+                                                <option selected value>-- select an option --</option>
                                                 <option value="KinderGarten">KinderGarten</option>
                                                 <option value="Primary">Primary</option>
                                                 <option value="Preparator">Preparator</option>
@@ -698,7 +697,7 @@
                                         <td><input type="number" name="relatives[{{ $i }}][fees]"/></td>
                                         <td>
                                             <select name="relatives[{{ $i }}][health_status]">
-                                                <option disabled selected value>-- select an option --</option>
+                                                <option selected value>-- select an option --</option>
                                                 <option value="Healthy">Healthy</option>
                                                 <option value="Unhealthy">Unhealthy</option>
                                                 <option value="special_need">Special Need</option>
@@ -804,7 +803,8 @@
                                     <label for="science_lesson" class="form-check-label">Science</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="custom_lesson_checkbox" name="intensive_lessons[]" value="Other"
+                                    <input type="checkbox" id="custom_lesson_checkbox" name="intensive_lessons[]"
+                                           value="Other"
                                            class="form-check-input">
                                     <label for="custom_lesson" class="form-check-label">Other</label>&nbsp;&nbsp;
                                     <input type="text" id="custom_lesson" name="custom_lesson"
@@ -943,7 +943,13 @@
                                 </div>
                             </div>
                             <br>
-                            <table class="table w-auto table-responsive">
+                            <div>
+                                <span><b>Use The following terms when you fill the table:</b></span>
+                                <br>
+                                <span><b>Special Devices Needs: </b>Wheel Chair/Water mattress/Walking Sticks/Diapers/Artificial extremities/Oxygen/Other</span>
+                            </div>
+                            <br>
+                            <table class="table w-auto table-responsive table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>No.</th>
@@ -1154,6 +1160,10 @@
                                             <label for="water_tank_need" class="form-check-label">Water Tank</label>
                                         </div>
                                     </div>
+                                    @if($errors->has('family_needs'))
+                                        <div class="invalid-feedback"
+                                             style="color: red;">{{ $errors->first('family_needs') }}</div>
+                                    @endif
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 mb-2">
@@ -1179,7 +1189,8 @@
                                             <label for="laptop_need" class="form-check-label">Laptop</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input type="checkbox" id="custom_need_checkbox" name="family_needs[]" value="Other"
+                                            <input type="checkbox" id="custom_need_checkbox" name="family_needs[]"
+                                                   value="Other"
                                                    class="form-check-input">
                                             <label for="custom_need_checkbox" class="form-check-label">Other</label>
                                         </div>
@@ -1250,200 +1261,200 @@
                             </div>
 
                         </section>
-                      <h3></h3>
-                      <section>
-                          <h2 style="background: #dde2ef;padding:7px">Resident Status of The Family</h2> <br>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="resident_status" class="col-form-label col-md-6">Resident
-                                              Status</label>
-                                          <div class="col-md-6">
-                                              <select id="resident_status" name="resident_status"
-                                                      class="form-control border-dark @error('resident_status') is-invalid @enderror">
-                                                  <option disabled selected value> -- select an option --</option>
-                                                  @foreach($resident_statuses as $status)
-                                                      <option value="{{$status}}">{{$status}}</option>
-                                                  @endforeach
-                                              </select>
-                                              @if($errors->has('resident_status'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('jobs_members') }}</div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="resident_type" class="col-form-label col-md-6">Resident
-                                              Type</label>
-                                          <div class="col-md-6">
-                                              <select id="resident_type" name="resident_type"
-                                                      class="form-control border-dark @error('resident_type') is-invalid @enderror">
-                                                  <option disabled selected value> -- select an option --</option>
-                                                  @foreach($resident_types as $type)
-                                                      <option value="{{$type}}">{{$type}}</option>
-                                                  @endforeach
-                                              </select>
-                                              @if($errors->has('resident_type'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('resident_type') }}</div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="resident_description" class="col-form-label col-md-6">Resident
-                                              Description</label>
-                                          <div class="col-md-6">
-                                              <select id="resident_description" name="resident_description"
-                                                      class="form-control border-dark @error('resident_type') is-invalid @enderror">
-                                                  <option disabled selected value> -- select an option --</option>
-                                                  @foreach($resident_descriptions as $desc)
-                                                      <option value="{{$desc}}">{{$desc}}</option>
-                                                  @endforeach
-                                              </select>
-                                              @if($errors->has('resident_description'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('resident_description') }}</div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="container">
-                              <div class="row">
-                                  <div class="col-md-6">
-                                      <label class="label"><b>Resident Needs</b></label><br>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="paints_need" name="resident_needs[]"
-                                                 value="Paints" class="form-check-input">
-                                          <label for="paints_need" class="form-check-label">Paints</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="doors_need" name="resident_needs[]" value="Doors"
-                                                 class="form-check-input">
-                                          <label for="doors_need" class="form-check-label">Doors</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="sewerage_network_need" name="resident_needs[]"
-                                                 value="Sewerage Network" class="form-check-input">
-                                          <label for="sewerage_network_need" class="form-check-label">Sewerage
-                                              Network</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="asbestos_need" name="resident_needs[]"
-                                                 value="Asbestos" class="form-check-input">
-                                          <label for="asbestos_need" class="form-check-label">Asbestos</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="electricity_need" name="resident_needs[]"
-                                                 value="Electricity" class="form-check-input">
-                                          <label for="electricity_need" class="form-check-label">Electricity</label>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-md-12 mb-2">
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="plaster_need" name="resident_needs[]"
-                                                 value="Plaster" class="form-check-input">
-                                          <label for="plaster_need" class="form-check-label">Plaster</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="windows_need" name="resident_needs[]"
-                                                 value="Windows" class="form-check-input">
-                                          <label for="windows_need" class="form-check-label">Windows</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="general_maintenance_need" name="resident_needs[]"
-                                                 value="General Maintenance" class="form-check-input">
-                                          <label for="general_maintenance_need" class="form-check-label">General
-                                              Maintenance</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="roof_need" name="resident_needs[]" value="Roof"
-                                                 class="form-check-input">
-                                          <label for="roof_need" class="form-check-label">Roof</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input type="checkbox" id="new_room_need" name="resident_needs[]"
-                                                 value="New Room" class="form-check-input">
-                                          <label for="new_room_need" class="form-check-label">New Room</label>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="rent_cost" class="col-form-label col-md-6">Rent Cost(Monthly in
-                                              BGP)</label>
-                                          <div class="col-md-6">
-                                              <input type="number" id="rent_cost" name="rent_cost"
-                                                     class="form-control border-dark @error('rent_cost') is-invalid @enderror">
-                                              @if($errors->has('rent_cost'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('no_rooms') }}
-                                                  </div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="no_rooms" class="col-form-label col-md-6">No. of Rooms</label>
-                                          <div class="col-md-6">
-                                              <input type="number" id="no_rooms" name="no_rooms"
-                                                     class="form-control border-dark @error('no_rooms') is-invalid @enderror">
-                                              @if($errors->has('no_rooms'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('no_rooms') }}
-                                                  </div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row row-xs">
-                              <div class="col-md-7">
-                                  <div class="form-group">
-                                      <div class="row">
-                                          <label for="house_area" class="col-form-label col-md-6">House
-                                              Area(m^2)</label>
-                                          <div class="col-md-6">
-                                              <input type="number" id="house_area" name="house_area"
-                                                     class="form-control border-dark @error('house_area') is-invalid @enderror">
-                                              @if($errors->has('house_area'))
-                                                  <div class="invalid-feedback"
-                                                       style="color: red;">{{ $errors->first('house_area') }}
-                                                  </div>
-                                              @endif
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                        </section>
                         <h3></h3>
-                         --}}
+                        <section>
+                            <h2 style="background: #dde2ef;padding:7px">Resident Status of The Family</h2> <br>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="resident_status" class="col-form-label col-md-6">Resident
+                                                Status</label>
+                                            <div class="col-md-6">
+                                                <select id="resident_status" name="resident_status"
+                                                        class="form-control border-dark @error('resident_status') is-invalid @enderror">
+                                                    <option disabled selected value> -- select an option --</option>
+                                                    @foreach($resident_statuses as $status)
+                                                        <option value="{{$status}}">{{$status}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if($errors->has('resident_status'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('jobs_members') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="resident_type" class="col-form-label col-md-6">Resident
+                                                Type</label>
+                                            <div class="col-md-6">
+                                                <select id="resident_type" name="resident_type"
+                                                        class="form-control border-dark @error('resident_type') is-invalid @enderror">
+                                                    <option disabled selected value> -- select an option --</option>
+                                                    @foreach($resident_types as $type)
+                                                        <option value="{{$type}}">{{$type}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if($errors->has('resident_type'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('resident_type') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="resident_description" class="col-form-label col-md-6">Resident
+                                                Description</label>
+                                            <div class="col-md-6">
+                                                <select id="resident_description" name="resident_description"
+                                                        class="form-control border-dark @error('resident_type') is-invalid @enderror">
+                                                    <option disabled selected value> -- select an option --</option>
+                                                    @foreach($resident_descriptions as $desc)
+                                                        <option value="{{$desc}}">{{$desc}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if($errors->has('resident_description'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('resident_description') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="label"><b>Resident Needs</b></label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="paints_need" name="resident_needs[]"
+                                                   value="Paints" class="form-check-input">
+                                            <label for="paints_need" class="form-check-label">Paints</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="doors_need" name="resident_needs[]" value="Doors"
+                                                   class="form-check-input">
+                                            <label for="doors_need" class="form-check-label">Doors</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="sewerage_network_need" name="resident_needs[]"
+                                                   value="Sewerage Network" class="form-check-input">
+                                            <label for="sewerage_network_need" class="form-check-label">Sewerage
+                                                Network</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="asbestos_need" name="resident_needs[]"
+                                                   value="Asbestos" class="form-check-input">
+                                            <label for="asbestos_need" class="form-check-label">Asbestos</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="electricity_need" name="resident_needs[]"
+                                                   value="Electricity" class="form-check-input">
+                                            <label for="electricity_need" class="form-check-label">Electricity</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-2">
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="plaster_need" name="resident_needs[]"
+                                                   value="Plaster" class="form-check-input">
+                                            <label for="plaster_need" class="form-check-label">Plaster</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="windows_need" name="resident_needs[]"
+                                                   value="Windows" class="form-check-input">
+                                            <label for="windows_need" class="form-check-label">Windows</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="general_maintenance_need" name="resident_needs[]"
+                                                   value="General Maintenance" class="form-check-input">
+                                            <label for="general_maintenance_need" class="form-check-label">General
+                                                Maintenance</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="roof_need" name="resident_needs[]" value="Roof"
+                                                   class="form-check-input">
+                                            <label for="roof_need" class="form-check-label">Roof</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" id="new_room_need" name="resident_needs[]"
+                                                   value="New Room" class="form-check-input">
+                                            <label for="new_room_need" class="form-check-label">New Room</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="rent_cost" class="col-form-label col-md-6">Rent Cost(Monthly in
+                                                BGP)</label>
+                                            <div class="col-md-6">
+                                                <input type="number" id="rent_cost" name="rent_cost"
+                                                       class="form-control border-dark @error('rent_cost') is-invalid @enderror">
+                                                @if($errors->has('rent_cost'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('no_rooms') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="no_rooms" class="col-form-label col-md-6">No. of Rooms</label>
+                                            <div class="col-md-6">
+                                                <input type="number" id="no_rooms" name="no_rooms"
+                                                       class="form-control border-dark @error('no_rooms') is-invalid @enderror">
+                                                @if($errors->has('no_rooms'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('no_rooms') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-xs">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label for="house_area" class="col-form-label col-md-6">House
+                                                Area(m^2)</label>
+                                            <div class="col-md-6">
+                                                <input type="number" id="house_area" name="house_area"
+                                                       class="form-control border-dark @error('house_area') is-invalid @enderror">
+                                                @if($errors->has('house_area'))
+                                                    <div class="invalid-feedback"
+                                                         style="color: red;">{{ $errors->first('house_area') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3></h3>
                         <section>
 
                             <h2 style="background: #dde2ef;padding:7px">Attachments</h2> <br>
@@ -1545,11 +1556,11 @@
     <script src="{{URL::asset('assets/plugins/pickerjs/picker.min.js')}}"></script>
     <!-- Internal form-elements js -->
     <script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
-    {{--
+
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const input = document.getElementById("father_death_div");
-            $("#category_dropdown").change(function() {
+            $("#category_dropdown").change(function () {
                 console.log("Option selected:", $(this).val());
                 // Perform some action based on the selected option
                 if ($(this).val() === "ORPHAN") {
@@ -1568,13 +1579,13 @@
 
             if (checkbox.checked) {
                 disabilityTypeInput.style.display = "block";
-            } else if(!(checkbox.checked)) {
+            } else if (!(checkbox.checked)) {
                 disabilityTypeInput.style.display = "none";
             }
         }
 
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Initially hide the Intensive Lessons and Cost fields
             $('#intensive_lessons_container').hide();
             $('#lessons_cost').hide();
@@ -1583,7 +1594,7 @@
             $("#custom_need").prop("disabled", true);
 
             // Event listener for the radio buttons
-            $('input[name="need_lessons"]').on('change', function() {
+            $('input[name="need_lessons"]').on('change', function () {
                 if ($(this).val() === '1') {
                     // Show the Intensive Lessons and Cost fields
                     $('#intensive_lessons_container').show();
@@ -1595,22 +1606,22 @@
                 }
             });
         });
-        $(document).ready(function() {
-            $('#custom_lesson_checkbox').change(function() {
+        $(document).ready(function () {
+            $('#custom_lesson_checkbox').change(function () {
                 if ($(this).is(':checked')) {
                     $('#custom_lesson').prop('disabled', false);
                 } else {
                     $('#custom_lesson').prop('disabled', true);
                 }
             });
-            $('#custom_hobbie_checkbox').change(function() {
+            $('#custom_hobbie_checkbox').change(function () {
                 if ($(this).is(':checked')) {
                     $('#custom_hobbie').prop('disabled', false);
                 } else {
                     $('#custom_hobbie').prop('disabled', true);
                 }
             });
-            $('#custom_need_checkbox').change(function() {
+            $('#custom_need_checkbox').change(function () {
                 if ($(this).is(':checked')) {
                     $('#custom_need').prop('disabled', false);
                 } else {

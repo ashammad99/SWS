@@ -17,7 +17,6 @@ class PermissionController extends Controller
         $permissions = Permission::all();
         return view('users.permissions.permissions', compact('permissions'));
     }
-
     /**
      * Show the form for creating a new resource.
      *

@@ -4,7 +4,7 @@
     <link href="{{URL::asset('assets/plugins/select2/css/select2.min.css')}}" rel="stylesheet">
 @endsection
 @section('title')
-    Create Child
+    Update Child
 @endsection
 @section('page-header')
     <!-- breadcrumb -->
@@ -56,6 +56,8 @@
                     <form action="{{route('child.update',$child->id)}}" method="post" id="wizard1"
                           enctype="multipart/form-data">
                         @csrf
+                        @method('put')
+
                         <h3></h3>
                         <section href="#child_identification">
                             <h2 style="background: #dde2ef;padding:7px">Child Identification</h2>
@@ -63,7 +65,7 @@
                             <div class="row row-xs">
                                 <div class="form-group">
                                     <label for="child_code" class="">Child Code</label>
-                                    <input type="number" id="child_code" readonly name="child_code"
+                                    <input type="number" id="child_code" name="child_code"
                                            value="{{$child->child_code}}"
                                            placeholder="Child Code"
                                            class="form-control border-dark @error('child_code') is-invalid @enderror"
@@ -132,10 +134,14 @@
                                 <div class="col-md-5">
                                     <h6>Gender: </h6>
                                     <div class="form-group" style="margin-left: 10%">
-                                        <input type="radio" id="male" name="gender" value="Male">
+                                        <input type="radio"
+                                               {{ old('gender', $child->gender) === 'Male' ? 'checked' : '' }} id="male"
+                                               name="gender" value="Male">
                                         <label for="male">Male</label>
                                         <br>
-                                        <input type="radio" id="female" name="gender" value="Female">
+                                        <input type="radio"
+                                               {{ old('gender', $child->gender) === 'Female' ? 'checked' : '' }} id="female"
+                                               name="gender" value="Female">
                                         <label for="female">Female</label>
                                     </div>
                                 </div>
@@ -207,8 +213,9 @@
                                 <div class="form-check form-check-inline" style="">
                                     <b><label class="form-check-label"
                                               for="has_disability">has Disability?&nbsp;&nbsp;&nbsp;</label></b>
-                                    <input type="checkbox" id="has_disability" name="has_disability"
+                                    <input type="checkbox" id="has_disability" name="has_disability" value="1"
                                            onclick="showDisabilityTypeInput()"
+
                                            @if($child->has_disability == 1) checked @endif
                                            @error('has_disability') is-invalid @enderror">
 
@@ -346,7 +353,6 @@
                             </div>
 
                         </section>
-
                         <h3></h3>
                         <section>
                             <br>
@@ -601,9 +607,7 @@
                                     @endif
                                 </div>
                             </div>
-
                         </section>
-
                         <h3></h3>
                         <section>
                             <br>
@@ -687,7 +691,7 @@
                             </div>
                             <br>
                             <h2 style="background: #dde2ef;padding:7px">Family Members</h2>
-                            <span>in the table Start by the Guardian, Mother, Children, from the oldest to the youngest and other dependents.</span>
+                            <span>in the table Start by the Guardian, Mother, Children, from the oldest to the youngest and other dependents.</span><br>
                             <table class="table w-auto table-responsive">
                                 <thead>
                                 <tr>
@@ -704,7 +708,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @for ($i = 1; $i <= 15; $i++)
+                                @for ($i = 1; $i <= 15; $i++)
                                     <tr>
                                         <td>{{$i}}</td>
                                         <td><input type="text" name="relatives[{{ $i }}][name]"
@@ -712,56 +716,101 @@
                                                    placeholder="First Name"/></td>
                                         <td>
                                             <select name="relatives[{{$i}}][sex]">
-                                                <option disabled selected value>-- select an option --</option>
-                                                <option @if(isset($json_data[$i]['sex']) && $json_data[$i]['sex']) == 'M')selected @endif value="M">Male</option>
-                                                <option @if(isset($json_data[$i]['sex']) && $json_data[$i]['sex']) == 'F')selected @endif value="F">Female</option>
+                                                <option selected value>-- select an option --</option>
+                                                <option @if($json_data[$i]['sex'] == 'M') selected @endif value="M">
+                                                    Male
+                                                </option>
+                                                <option @if($json_data[$i]['sex'] == 'F') selected @endif value="F">
+                                                    Female
+                                                </option>
                                             </select>
                                         </td>
                                         <td>
                                             <select name="relatives[{{ $i }}][relation]">
-                                                <option disabled selected value>-- select an option --</option>
-                                                <option value="Mother">Mother</option>
-                                                <option  value="Brother">Brother</option>
-                                                <option value="Sister">Sister</option>
-                                                <option value="Son">Son</option>
-                                                <option value="Daughter">Daughter</option>
-                                                <option value="Grandfather">Grandfather</option>
-                                                <option value="Grandmother">Grandmother</option>
+                                                <option selected value>-- select an option --</option>
+                                                <option @if($json_data[$i]['relation'] == 'Mother') selected
+                                                        @endif  value="Mother">Mother
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Brother') selected
+                                                        @endif value="Brother">Brother
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Sister') selected
+                                                        @endif value="Sister">Sister
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Son') selected
+                                                        @endif value="Son">Son
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Daughter') selected
+                                                        @endif value="Daughter">Daughter
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Grandfather') selected
+                                                        @endif value="Grandfather">Grandfather
+                                                </option>
+                                                <option @if($json_data[$i]['relation'] == 'Grandmother') selected
+                                                        @endif value="Grandmother">Grandmother
+                                                </option>
                                             </select>
                                         </td>
-                                        <td><input type="date" name="relatives[{{ $i }}][dob]"/></td>
+                                        <td><input type="date" value="{{$json_data[$i]['dob']}}"
+                                                   name="relatives[{{ $i }}][dob]"/></td>
                                         <td>
                                             <select name="relatives[{{ $i }}][edu_level]">
-                                                <option disabled selected value>-- select an option --</option>
-                                                <option value="KinderGarten">KinderGarten</option>
-                                                <option value="Primary">Primary</option>
-                                                <option value="Preparator">Preparator</option>
-                                                <option value="Secondary">Secondary</option>
-                                                <option value="Diploma">Diploma</option>
-                                                <option value="University">University</option>
-                                                <option value="HigherDegrees">HigherDegrees</option>
-                                                <option value="Vocational">Vocational</option>
-                                                <option value="illiterate">illiterate</option>
+                                                <option selected value>-- select an option --</option>
+                                                <option @if($json_data[$i]['edu_level'] == 'KinderGarten') selected
+                                                        @endif value="KinderGarten">KinderGarten
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'Primary') selected
+                                                        @endif value="Primary">Primary
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'Preparator') selected
+                                                        @endif value="Preparator">Preparator
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'Secondary') selected
+                                                        @endif value="Secondary">Secondary
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'Diploma') selected
+                                                        @endif value="Diploma">Diploma
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'University') selected
+                                                        @endif value="University">University
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'HigherDegrees') selected
+                                                        @endif value="HigherDegrees">HigherDegrees
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'Vocational') selected
+                                                        @endif value="Vocational">Vocational
+                                                </option>
+                                                <option @if($json_data[$i]['edu_level'] == 'illiterate') selected
+                                                        @endif value="illiterate">illiterate
+                                                </option>
                                             </select>
                                         </td>
-                                        <td><input type="number" name="relatives[{{ $i }}][fees]"/></td>
+                                        <td><input type="number" value="{{$json_data[$i]['fees']}}"
+                                                   name="relatives[{{ $i }}][fees]"/></td>
                                         <td>
                                             <select name="relatives[{{ $i }}][health_status]">
-                                                <option disabled selected value>-- select an option --</option>
-                                                <option value="Healthy">Healthy</option>
-                                                <option value="Unhealthy">Unhealthy</option>
-                                                <option value="special_need">Special Need</option>
+                                                <option selected value>-- select an option --</option>
+                                                <option @if($json_data[$i]['health_status'] == 'Healthy') selected
+                                                        @endif  value="Healthy">Healthy
+                                                </option>
+                                                <option @if($json_data[$i]['health_status'] == 'Unhealthy') selected
+                                                        @endif value="Unhealthy">Unhealthy
+                                                </option>
+                                                <option @if($json_data[$i]['health_status'] == 'special_need') selected
+                                                        @endif value="special_need">Special Need
+                                                </option>
                                             </select>
                                         </td>
-                                        <td><input type="text" value="{{$json_data[$i]['work_type']}}" name="relatives[{{ $i }}][work_type]"/></td>
-                                        <td><input type="number" name="relatives[{{ $i }}][income]"/></td>
+                                        <td><input type="text" value="{{$json_data[$i]['work_type']}}"
+                                                   name="relatives[{{ $i }}][work_type]"/></td>
+                                        <td><input type="number" value="{{$json_data[$i]['income']}}"
+                                                   name="relatives[{{ $i }}][income]"/></td>
                                     </tr>
                                 @endfor
                                 </tbody>
                             </table>
 
                         </section>
-
                         <h3></h3>
                         <section>
                             <br>
@@ -777,7 +826,10 @@
                                                         class="form-control border-dark @error('child_edu_level') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($child_edu_level as $level)
-                                                        <option value="{{$level}}">{{$level}}</option>
+                                                        <option value="{{$level}}"
+                                                                @if ($child->education->child_edu_level == $level) selected @endif>
+                                                            {{$level}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('child_edu_level'))
@@ -794,6 +846,7 @@
                                             <label for="school_name" class="col-form-label col-md-6">School Name</label>
                                             <div class="col-md-6">
                                                 <input type="text" id="school_name" name="school_name"
+                                                       value="{{$child->education->school_name}}"
                                                        class="form-control border-dark @error('school_name') is-invalid @enderror">
                                                 @if($errors->has('school_name'))
                                                     <div class="invalid-feedback"
@@ -813,11 +866,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-check">
                                                     <input type="radio" id="need_yes" name="need_lessons" value="1"
+                                                           {{ old('need_lessons', $child->education->need_lessons) == '1' ? 'checked' : '' }}
                                                            class="form-check-input">
                                                     <label for="need_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input type="radio" id="need_no" name="need_lessons" value="0"
+                                                           {{ old('need_lessons', $child->education->need_lessons) == '0' ? 'checked' : '' }}
                                                            class="form-check-input">
                                                     <label for="need_no" class="form-check-label">No</label>
                                                 </div>
@@ -834,30 +889,37 @@
                                 <label class="col-form-label col-md-2"><b>Intensive Lessons:</b></label>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="english_lesson" name="intensive_lessons[]"
-                                           value="English" class="form-check-input">
+                                           value="English"
+                                           @if(in_array('English',$lessonsArray))checked @endif
+                                           class="form-check-input">
                                     <label for="english_lesson" class="form-check-label">English</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="arabic_lesson" name="intensive_lessons[]" value="Arabic"
+                                           @if(in_array('Arabic',$lessonsArray))checked @endif
                                            class="form-check-input">
                                     <label for="arabic_lesson" class="form-check-label">Arabic</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="mathematics_lesson" name="intensive_lessons[]"
+                                           @if(in_array('Mathematics',$lessonsArray))checked @endif
                                            value="Mathematics" class="form-check-input">
                                     <label for="mathematics_lesson" class="form-check-label">Mathematics</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="science_lesson" name="intensive_lessons[]"
+                                           @if(in_array('Science',$lessonsArray))checked @endif
                                            value="Science" class="form-check-input">
                                     <label for="science_lesson" class="form-check-label">Science</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="custom_lesson_checkbox" name="intensive_lessons[]"
                                            value="Other"
+                                           @if(in_array('Other',$lessonsArray))checked @endif
                                            class="form-check-input">
                                     <label for="custom_lesson" class="form-check-label">Other</label>&nbsp;&nbsp;
                                     <input type="text" id="custom_lesson" name="custom_lesson"
+                                           value="@if(in_array('Other',$lessonsArray)){{end($lessonsArray)}} @endif"
                                            placeholder="Enter custom Lesson" class="form-control border-dark">
                                 </div>
                             </div>
@@ -870,6 +932,7 @@
                                                 improve Child Education(GBP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="cost_lesson" name="cost_lesson"
+                                                       value="{{$child->education->cost_lesson}}"
                                                        class="form-control border-dark @error('members_count') is-invalid @enderror">
                                                 @if($errors->has('cost_lesson'))
                                                     <div class="invalid-feedback"
@@ -886,45 +949,51 @@
                                 <label class="col-form-label col-md-2"><b>Child Hobbies:</b></label>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="football_hobbie" name="hobbies[]"
+                                           @if(in_array('Football',$hobbiesArray))checked @endif
                                            value="Football" class="form-check-input">
                                     <label for="football_hobbie" class="form-check-label">Football</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="swimming_hobbie" name="hobbies[]" value="Swimming"
+                                           @if(in_array('Swimming',$hobbiesArray))checked @endif
                                            class="form-check-input">
                                     <label for="swimming_hobbie" class="form-check-label">Swimming</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="fishing_hobbie" name="hobbies[]"
+                                           @if(in_array('Fishing',$hobbiesArray))checked @endif
                                            value="Fishing" class="form-check-input">
                                     <label for="fishing_hobbie" class="form-check-label">Fishing</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="drawing_hobbie" name="hobbies[]"
-                                           value="Drawing" class="form-check-input">
+                                    <input type="checkbox" id="drawing_hobbie" name="hobbies[]" value="Drawing"
+                                           @if(in_array('Drawing',$hobbiesArray))checked @endif
+                                           class="form-check-input">
                                     <label for="drawing_hobbie" class="form-check-label">Drawing</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="reading_hobbie" name="hobbies[]"
-                                           value="Reading" class="form-check-input">
+                                    <input type="checkbox" id="reading_hobbie" name="hobbies[]" value="Reading"
+                                           @if(in_array('Reading',$hobbiesArray))checked @endif
+                                           class="form-check-input">
                                     <label for="reading_hobbie" class="form-check-label">Reading</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="checkbox" id="singing_hobbie" name="hobbies[]"
-                                           value="Singing" class="form-check-input">
+                                    <input type="checkbox" id="singing_hobbie" name="hobbies[]" value="Singing"
+                                           @if(in_array('Singing',$hobbiesArray))checked @endif
+                                           class="form-check-input">
                                     <label for="singing_hobbie" class="form-check-label">Singing</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" id="custom_hobbie_checkbox" name="hobbies[]" value="Other"
+                                           @if(in_array('Other',$hobbiesArray))checked @endif
                                            class="form-check-input">
                                     <label for="custom_hobbie" class="form-check-label">Other</label>&nbsp;&nbsp;
                                     <input type="text" id="custom_hobbie" name="custom_hobbie"
+                                           value="@if(in_array('Other',$hobbiesArray)){{end($hobbiesArray)}} @endif"
                                            placeholder="Enter custom Hobbie" class="form-control border-dark">
                                 </div>
                             </div>
-
                         </section>
-
                         <h3></h3>
                         <section>
                             <br>
@@ -939,11 +1008,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="good_health_yes" name="good_health"
+                                                           {{ old('good_health', $child->health->good_health) == '1' ? 'checked' : '' }}
                                                            value="1" class="form-check-input">
                                                     <label for="good_health_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="good_health_no" name="good_health"
+                                                           {{ old('good_health', $child->health->good_health) == '0' ? 'checked' : '' }}
                                                            value="0" class="form-check-input">
                                                     <label for="good_health_no" class="form-check-label">No</label>
                                                 </div>
@@ -961,11 +1032,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="has_disease_yes" name="has_disease"
+                                                           {{ old('has_disease', $child->health->has_disease) == '1' ? 'checked' : '' }}
                                                            value="1" class="form-check-input">
                                                     <label for="has_disease_yes" class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" id="has_disease_no" name="has_disease"
+                                                           {{ old('has_disease', $child->health->has_disease) == '0' ? 'checked' : '' }}
                                                            value="0" class="form-check-input">
                                                     <label for="has_disease_no" class="form-check-label">No</label>
                                                 </div>
@@ -982,7 +1055,7 @@
                                             <label for="medicines" class="col-form-label col-md-6">Medications</label>
                                             <div class="col-md-6">
                                                     <textarea id="medications" name="medications"
-                                                              class="form-control border-dark @error('medications') is-invalid @enderror"></textarea>
+                                                              class="form-control border-dark @error('medications') is-invalid @enderror">{{$child->health->medications}}</textarea>
                                                 @if($errors->has('medications'))
                                                     <div class="invalid-feedback"
                                                          style="color: red;">{{ $errors->first('medications') }}</div>
@@ -993,7 +1066,13 @@
                                 </div>
                             </div>
                             <br>
-                            <table class="table w-auto table-responsive">
+                            <div>
+                                <span><b>Use The following terms when you fill the table:</b></span>
+                                <br>
+                                <span><b>Special Devices Needs: </b>Wheel Chair/Water mattress/Walking Sticks/Diapers/Artificial extremities/Oxygen/Other</span>
+                            </div>
+                            <br>
+                            <table class="table w-auto table-responsive table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>No.</th>
@@ -1008,24 +1087,29 @@
                                 @for ($i = 1; $i <= 7; $i++)
                                     <tr>
                                         <td>{{$i}}</td>
-
                                         <td><input type="text" name="patients[{{ $i }}][patient_name]"
+                                                   value="{{$json_patients[$i]['patient_name']}}"
                                                    placeholder="First Name"/></td>
                                         <td><input type="text" name="patients[{{ $i }}][disease]"
+                                                   value="{{$json_patients[$i]['disease']}}"
                                                    placeholder="Disease"/></td>
                                         <td><input type="text" name="patients[{{ $i }}][treatment_cost]"
+                                                   value="{{$json_patients[$i]['treatment_cost']}}"
                                                    placeholder=""/></td>
                                         <td><input type="text" name="patients[{{ $i }}][special_needs]"
+                                                   value="{{$json_patients[$i]['special_needs']}}"
                                                    placeholder=""/></td>
                                         <td><input type="text" name="patients[{{ $i }}][notes]"
+                                                   value="{{$json_patients[$i]['notes']}}"
                                                    placeholder=""/></td>
-
                                     </tr>
                                 @endfor
                                 </tbody>
                             </table>
+
                         </section>
                         <h3></h3>
+
                         <section>
                             <br>
                             <h2 style="background: #dde2ef;padding:7px">Economic Status of the Family</h2>
@@ -1041,7 +1125,10 @@
                                                         class="form-control border-dark @error('jobs_members') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($jobs_members as $member)
-                                                        <option value="{{$member}}">{{$member}}</option>
+                                                        <option value="{{$member}}"
+                                                                @if($child->economic->jobs_members == $member) selected @endif>
+                                                            {{$member}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('jobs_members'))
@@ -1064,7 +1151,10 @@
                                                         class="form-control border-dark @error('periodic_sponsorships') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($periodic_sponsorships as $per_spons)
-                                                        <option value="{{$per_spons}}">{{$per_spons}}</option>
+                                                        <option value="{{$per_spons}}"
+                                                                @if($child->economic->periodic_sponsorships == $per_spons) selected @endif>
+                                                            {{$per_spons}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('periodic_sponsorships'))
@@ -1087,7 +1177,10 @@
                                                         class="form-control border-dark @error('irregular_aids') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($irregular_aids as $aid)
-                                                        <option value="{{$aid}}">{{$aid}}</option>
+                                                        <option value="{{$aid}}"
+                                                                @if($child->economic->irregular_aids == $aid) selected @endif>
+                                                            {{$aid}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('irregular_aids'))
@@ -1107,6 +1200,7 @@
                                                 Fees(BGP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="house_fees" name="house_fees"
+                                                       value="{{$child->economic->house_fees}}"
                                                        class="form-control border-dark @error('house_fees') is-invalid @enderror">
                                                 @if($errors->has('house_fees'))
                                                     <div class="invalid-feedback"
@@ -1126,6 +1220,7 @@
                                                 Fees(BGP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="edu_fees" name="edu_fees"
+                                                       value="{{$child->economic->edu_fees}}"
                                                        class="form-control border-dark @error('edu_fees') is-invalid @enderror">
                                                 @if($errors->has('edu_fees'))
                                                     <div class="invalid-feedback"
@@ -1144,6 +1239,7 @@
                                             <label for="rents" class="col-form-label col-md-6">Rents(BGP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="rents" name="rents"
+                                                       value="{{$child->economic->rents}}"
                                                        class="form-control border-dark @error('rents') is-invalid @enderror">
                                                 @if($errors->has('rents'))
                                                     <div class="invalid-feedback"
@@ -1163,6 +1259,7 @@
                                                 Fees(BGP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="medical_fees" name="medical_fees"
+                                                       value="{{$child->economic->medical_fees}}"
                                                        class="form-control border-dark @error('medical_fees') is-invalid @enderror">
                                                 @if($errors->has('medical_fees'))
                                                     <div class="invalid-feedback"
@@ -1180,26 +1277,31 @@
                                         <label class="label"><b>In-Kind Support</b></label><br>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="fridge_need" name="family_needs[]" value="Fridge"
+                                                   @if(in_array('Fridge',$familyNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="fridge_need" class="form-check-label">Fridge</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="oven_need" name="family_needs[]" value="Oven"
+                                                   @if(in_array('Oven',$familyNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="oven_need" class="form-check-label">Oven</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="gaz_cylinder_need" name="family_needs[]"
+                                                   @if(in_array('Gaz Cylinder',$familyNeedsArray))checked @endif
                                                    value="Gaz Cylinder" class="form-check-input">
                                             <label for="gaz_cylinder_need" class="form-check-label">Gaz Cylinder</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="computer_need" name="family_needs[]"
+                                                   @if(in_array('Computer',$familyNeedsArray))checked @endif
                                                    value="Computer" class="form-check-input">
                                             <label for="computer_need" class="form-check-label">Computer</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="water_tank_need" name="family_needs[]"
+                                                   @if(in_array('Water Tank',$familyNeedsArray))checked @endif
                                                    value="Water Tank" class="form-check-input">
                                             <label for="water_tank_need" class="form-check-label">Water Tank</label>
                                         </div>
@@ -1209,33 +1311,39 @@
                                     <div class="col-md-12 mb-2">
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="washing_machine_need" name="family_needs[]"
+                                                   @if(in_array('Washing machine',$familyNeedsArray))checked @endif
                                                    value="Washing machine" class="form-check-input">
                                             <label for="washing_machine_need" class="form-check-label">Washing
                                                 machine</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="stove_need" name="family_needs[]" value="Stove"
+                                                   @if(in_array('Stove',$familyNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="stove_need" class="form-check-label">Stove</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="furniture_need" name="family_needs[]"
+                                                   @if(in_array('Furniture',$familyNeedsArray))checked @endif
                                                    value="Furniture" class="form-check-input">
                                             <label for="furniture_need" class="form-check-label">Furniture</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="laptop_need" name="family_needs[]" value="Laptop"
+                                                   @if(in_array('Laptop',$familyNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="laptop_need" class="form-check-label">Laptop</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="custom_need_checkbox" name="family_needs[]"
+                                                   @if(in_array('Other',$familyNeedsArray))checked @endif
                                                    value="Other"
                                                    class="form-check-input">
                                             <label for="custom_need_checkbox" class="form-check-label">Other</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="text" id="custom_need" name="custom_need"
+                                                   value="@if(in_array('Other',$familyNeedsArray)){{end($familyNeedsArray)}} @endif"
                                                    placeholder="Enter custom Need" class="form-control border-dark">
                                         </div>
                                     </div>
@@ -1252,6 +1360,7 @@
                                                 Type</label>
                                             <div class="col-md-6">
                                                 <input type="text" id="project_type" name="project_type"
+                                                       value="{{$child->economic->project_type}}"
                                                        class="form-control border-dark @error('house_fees') is-invalid @enderror">
                                                 @if($errors->has('project_type'))
                                                     <div class="invalid-feedback"
@@ -1270,6 +1379,7 @@
                                                 Cost</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="project_cost" name="project_cost"
+                                                       value="{{$child->economic->project_cost}}"
                                                        class="form-control border-dark @error('project_cost') is-invalid @enderror">
                                                 @if($errors->has('project_cost'))
                                                     <div class="invalid-feedback"
@@ -1289,7 +1399,9 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                     <textarea id="notes" name="notes" cols="30" rows="5"
-                                                              class="form-control border-dark @error('notes') is-invalid @enderror"></textarea>
+                                                              class="form-control border-dark @error('notes') is-invalid @enderror">
+                                                        {{$child->economic->notes}}
+                                                    </textarea>
                                                 @if($errors->has('notes'))
                                                     <div class="invalid-feedback"
                                                          style="color: red;">{{ $errors->first('notes') }}</div>
@@ -1299,7 +1411,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </section>
                         <h3></h3>
                         <section>
@@ -1315,7 +1426,9 @@
                                                         class="form-control border-dark @error('resident_status') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($resident_statuses as $status)
-                                                        <option value="{{$status}}">{{$status}}</option>
+                                                        <option value="{{$status}}"
+                                                                @if($child->resident->resident_status == $status) selected @endif>
+                                                            {{$status}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('resident_status'))
@@ -1338,7 +1451,9 @@
                                                         class="form-control border-dark @error('resident_type') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($resident_types as $type)
-                                                        <option value="{{$type}}">{{$type}}</option>
+                                                        <option value="{{$type}}"
+                                                                @if($child->resident->resident_type == $type) selected @endif>
+                                                            {{$type}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('resident_type'))
@@ -1361,7 +1476,10 @@
                                                         class="form-control border-dark @error('resident_type') is-invalid @enderror">
                                                     <option disabled selected value> -- select an option --</option>
                                                     @foreach($resident_descriptions as $desc)
-                                                        <option value="{{$desc}}">{{$desc}}</option>
+                                                        <option value="{{$desc}}" value="{{$type}}"
+                                                                @if($child->resident->resident_description == $desc) selected @endif>
+                                                            {{$desc}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 @if($errors->has('resident_description'))
@@ -1379,27 +1497,32 @@
                                         <label class="label"><b>Resident Needs</b></label><br>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="paints_need" name="resident_needs[]"
+                                                   @if(in_array('Paints',$residentNeedsArray))checked @endif
                                                    value="Paints" class="form-check-input">
                                             <label for="paints_need" class="form-check-label">Paints</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="doors_need" name="resident_needs[]" value="Doors"
+                                                   @if(in_array('Doors',$residentNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="doors_need" class="form-check-label">Doors</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="sewerage_network_need" name="resident_needs[]"
+                                                   @if(in_array('Sewerage Network',$residentNeedsArray))checked @endif
                                                    value="Sewerage Network" class="form-check-input">
                                             <label for="sewerage_network_need" class="form-check-label">Sewerage
                                                 Network</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="asbestos_need" name="resident_needs[]"
+                                                   @if(in_array('Asbestos',$residentNeedsArray))checked @endif
                                                    value="Asbestos" class="form-check-input">
                                             <label for="asbestos_need" class="form-check-label">Asbestos</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="electricity_need" name="resident_needs[]"
+                                                   @if(in_array('Electricity',$residentNeedsArray))checked @endif
                                                    value="Electricity" class="form-check-input">
                                             <label for="electricity_need" class="form-check-label">Electricity</label>
                                         </div>
@@ -1409,27 +1532,33 @@
                                     <div class="col-md-12 mb-2">
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="plaster_need" name="resident_needs[]"
+                                                   @if(in_array('Plaster',$residentNeedsArray))checked @endif
                                                    value="Plaster" class="form-check-input">
                                             <label for="plaster_need" class="form-check-label">Plaster</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="windows_need" name="resident_needs[]"
+                                                   @if(in_array('Windows',$residentNeedsArray))checked @endif
                                                    value="Windows" class="form-check-input">
                                             <label for="windows_need" class="form-check-label">Windows</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="general_maintenance_need" name="resident_needs[]"
+                                                   @if(in_array('General Maintenance',$residentNeedsArray))checked
+                                                   @endif
                                                    value="General Maintenance" class="form-check-input">
                                             <label for="general_maintenance_need" class="form-check-label">General
                                                 Maintenance</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="roof_need" name="resident_needs[]" value="Roof"
+                                                   @if(in_array('Roof',$residentNeedsArray))checked @endif
                                                    class="form-check-input">
                                             <label for="roof_need" class="form-check-label">Roof</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" id="new_room_need" name="resident_needs[]"
+                                                   @if(in_array('New Room',$residentNeedsArray))checked @endif
                                                    value="New Room" class="form-check-input">
                                             <label for="new_room_need" class="form-check-label">New Room</label>
                                         </div>
@@ -1444,6 +1573,7 @@
                                                 BGP)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="rent_cost" name="rent_cost"
+                                                       value="{{$child->resident->rent_cost}}"
                                                        class="form-control border-dark @error('rent_cost') is-invalid @enderror">
                                                 @if($errors->has('rent_cost'))
                                                     <div class="invalid-feedback"
@@ -1462,6 +1592,7 @@
                                             <label for="no_rooms" class="col-form-label col-md-6">No. of Rooms</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="no_rooms" name="no_rooms"
+                                                       value="{{$child->resident->no_rooms}}"
                                                        class="form-control border-dark @error('no_rooms') is-invalid @enderror">
                                                 @if($errors->has('no_rooms'))
                                                     <div class="invalid-feedback"
@@ -1481,6 +1612,7 @@
                                                 Area(m^2)</label>
                                             <div class="col-md-6">
                                                 <input type="number" id="house_area" name="house_area"
+                                                       value="{{$child->resident->house_area}}"
                                                        class="form-control border-dark @error('house_area') is-invalid @enderror">
                                                 @if($errors->has('house_area'))
                                                     <div class="invalid-feedback"
@@ -1549,8 +1681,9 @@
                                 </div>
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
                             </div>
+
                         </section>
                     </form>
                 </div>
@@ -1594,25 +1727,40 @@
     <script src="{{URL::asset('assets/plugins/pickerjs/picker.min.js')}}"></script>
     <!-- Internal form-elements js -->
     <script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
-    {{--
+
+
     <script>
-        $(document).ready(function() {
-            const input = document.getElementById("father_death_div");
-            $("#category_dropdown").change(function() {
-                console.log("Option selected:", $(this).val());
-                // Perform some action based on the selected option
-                if ($(this).val() === "ORPHAN") {
-                    input.style.display = "block";
-                } else {
-                    input.style.display = "none";
-                }
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            var radioButtons = document.querySelectorAll('input[name="need_lessons"]');
+
+            if (radioButtons[0].checked) {
+                document.getElementById('intensive_lessons_container').style.display = 'block';
+                document.getElementById('lessons_cost').style.display = 'block';
+            } else if (radioButtons[1].checked) {
+                document.getElementById('intensive_lessons_container').style.display = 'none';
+                document.getElementById('lessons_cost').style.display = 'none';
+            }
+            var custom_lesson_checkbox = document.getElementById('custom_lesson_checkbox');
+            var custom_lesson_input = document.getElementById('custom_lesson');
+
+            if (custom_lesson_checkbox.checked) {
+                custom_lesson_input.disabled = false;
+            } else {
+                custom_lesson_input.disabled = true;
+            }
+
+            var custom_hobbie_checkbox = document.getElementById('custom_hobbie_checkbox');
+            var custom_hobbie_input = document.getElementById('custom_hobbie');
+            if (custom_hobbie_checkbox.checked) {
+                custom_hobbie_input.disabled = false;
+            } else {
+                custom_hobbie_input.disabled = true;
+            }
+
         });
-    </script>
-    --}}
-    <script>
 
         function showDisabilityTypeInput() {
+
             var checkbox = document.getElementById("has_disability");
             var disabilityTypeInput = document.getElementById("disability_div");
 
@@ -1625,11 +1773,12 @@
 
 
         $(document).ready(function () {
+            showDisabilityTypeInput();
             // Initially hide the Intensive Lessons and Cost fields
-            $('#intensive_lessons_container').hide();
-            $('#lessons_cost').hide();
-            $("#custom_lesson").prop("disabled", true);
-            $("#custom_hobbie").prop("disabled", true);
+            // $('#intensive_lessons_container').hide();
+            // $('#lessons_cost').hide();
+            // $("#custom_lesson").prop("disabled", true);
+            // $("#custom_hobbie").prop("disabled", true);
             $("#custom_need").prop("disabled", true);
 
             // Event listener for the radio buttons
@@ -1644,9 +1793,10 @@
                     $('#lessons_cost').hide();
                 }
             });
+
         });
+
         $(document).ready(function () {
-            showDisabilityTypeInput();
             $('#custom_lesson_checkbox').change(function () {
                 if ($(this).is(':checked')) {
                     $('#custom_lesson').prop('disabled', false);
@@ -1670,4 +1820,5 @@
             });
         });
     </script>
+
 @endsection

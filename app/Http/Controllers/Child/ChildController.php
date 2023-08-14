@@ -3,33 +3,28 @@
 namespace App\Http\Controllers\Child;
 
 use App\Http\Controllers\Controller;
-use App\Models\BankInfo;
-use App\Models\Beneficiary;
 use App\Models\ChildEducationStatus;
 use App\Models\ChildHealthSituation;
 use App\Models\ChildIdentification;
 use App\Models\ChildsAttachment;
 use App\Models\ChildsEconomicStatus;
 use App\Models\ChildsResidentStatus;
+use App\Models\ChildSummaryReport;
 use App\Models\FamiliesConfiguration;
 use App\Models\Guardian;
-use App\Models\Orphan;
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ChildController extends Controller
 {
     protected $rules = [
         //Child Identification Rules
-        'child_code' => 'required|numeric|unique:child_identification',
+        'child_code' => 'required|numeric|unique:child_identification,child_code',
         'child_fullName_en' => 'required|string',
         'child_fullName_ar' => 'required|string',
         'child_id_no' => 'required|integer|digits:9',
@@ -44,12 +39,10 @@ class ChildController extends Controller
         'father_fullName_ar' => 'required|string',
         'father_id_no' => 'required|integer|digits:9',
         'death_date' => 'nullable|date',
-        'has_disability' => 'boolean',
+        'has_disability' => 'sometimes|boolean',
         'disability_type' => 'nullable|string',
         'sponsorship_category' => 'required|string',
         'scale_of_poverty' => 'required|in:VERY POOR,SEVERE,POOR',
-/*
-
         //Start Guardian rules
         'guardian_fullName_en' => 'required|string',
         'guardian_fullName_ar' => 'required|string',
@@ -80,13 +73,11 @@ class ChildController extends Controller
         'intensive_lessons' => 'array|required_if:need_lessons,1|nullable',
         'cost_lesson' => 'required_if:need_lessons,1|numeric|nullable',
         'hobbies' => 'nullable',
-
         //start of Health Status
         'good_health' => 'boolean',
         'has_disease' => 'boolean',
         'patients' => 'nullable',
         'medications' => 'nullable|string',
-
         //start of Economic status
         'jobs_members' => ['required', 'in:No,From GBP 0 - GBP 200,From GBP 200 - GBP 500,More than GBP 500'],
         'periodic_sponsorships' => ['required', 'in:No,From GBP 0 - GBP 60,From GBP 60 - GBP 150,More than GBP 150'],
@@ -107,7 +98,6 @@ class ChildController extends Controller
         'rent_cost' => 'nullable|integer',
         'no_rooms' => 'required|integer',
         'house_area' => 'required|integer',
-
         //start of Attachments rules
         'birth_certificate' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'child_personal_photo' => 'image|mimes:jpg,png,jpeg,gif,svg',
@@ -117,16 +107,10 @@ class ChildController extends Controller
         'medical_report' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'mother_id_card' => 'image|mimes:jpg,png,jpeg,gif,svg',
         'various_photos.*' => 'image|mimes:jpg,png,jpeg,gif,svg',
-*/
     ];
-
     public function index()
     {
-        $children = ChildIdentification::with('guardian')->find(3)->get();
-        $user = User::with('children')->find(1);
-//        dd($children->guardian);
-//        $guardian = Guardian::with('child')->find(1);
-//        dd($guardian);
+        $children = ChildIdentification::withoutTrashed('guardian')->get();
         return view('Child.table-data', compact('children'));
     }
 
@@ -134,23 +118,17 @@ class ChildController extends Controller
     {
 
         $scales = self::getEnumValues('child_identification', 'Scale_Of_poverty');
-
         $categories = self::getEnumValues('child_identification', 'category');
-
         $governates = DB::table('governorates')->get();
-
         $areas = DB::table('areas')->get();
-
         $relationsAr = self::getEnumValues('guardians', 'rel_to_ar');
         $relationsEN = self::getEnumValues('guardians', 'rel_to_en');
-
         $mother_martial_status = self::getEnumValues('child_identification', 'mother_martial_status');
         $guardian_martial_status = self::getEnumValues('guardians', 'guardian_martial_status');
         $works = self::getEnumValues('guardians', 'work');
         $edu_levels = self::getEnumValues('guardians', 'edu_level');
         $monthly_salary = self::getEnumValues('guardians', 'monthly_salary');
         $child_edu_level = self::getEnumValues('childs_edu_status', 'child_edu_level');
-
         $jobs_members = self::getEnumValues('childs_economic_status', 'jobs_members');
         $periodic_sponsorships = self::getEnumValues('childs_economic_status', 'periodic_sponsorships');
         $irregular_aids = self::getEnumValues('childs_economic_status', 'irregular_aids');
@@ -161,8 +139,7 @@ class ChildController extends Controller
         return view('Child.form-wizards',
             compact('scales',
                 'categories', 'governates', 'areas', 'relationsAr', 'relationsEN',
-                'mother_martial_status', 'guardian_martial_status', 'works',
-                'edu_levels', 'monthly_salary', 'child_edu_level', 'jobs_members'
+                'mother_martial_status', 'guardian_martial_status', 'works', 'edu_levels', 'monthly_salary', 'child_edu_level', 'jobs_members'
                 , 'periodic_sponsorships', 'irregular_aids', 'resident_statuses', 'resident_types', 'resident_descriptions'
             )
         );
@@ -174,7 +151,7 @@ class ChildController extends Controller
         $string_hobbies = null;
         $string_needs = null;
         $string_resident_needs = null;
-//        dd($request->all());
+
         if ($request->has('intensive_lessons')) {
             $count_lessons = count($request->intensive_lessons);
             $a = array();
@@ -213,21 +190,17 @@ class ChildController extends Controller
             $string_resident_needs = implode(',', $a);
         }
 
-//        dd($string_lessons);
-
-//        dd(print_r(json_encode($request['relatives'])));
         $validator = Validator::make($request->all(), $this->rules);
 
         if ($validator->fails()) {
-            dd($validator->errors());
+//            dd($validator->errors());
         }
 
         $validatedData = $request->validate($this->rules);
         DB::beginTransaction();
         try {
             $child = ChildIdentification::create($validatedData);
-
-/*
+            $child->sr_id = Auth::user()->id;
             $guardian = new Guardian();
             $guardian->child_id = $child->id;
             $guardian->fill($validatedData);
@@ -235,10 +208,8 @@ class ChildController extends Controller
 
             $familiesConfiguration = new FamiliesConfiguration();
             $familiesConfiguration->child_id = $child->id;
-//            $familiesConfiguration->relatives = json_encode($request->relatives);
             $familiesConfiguration->fill($validatedData);
             $familiesConfiguration->save();
-
 
             $childEducationStatus = new ChildEducationStatus();
             $childEducationStatus->child_id = $child->id;
@@ -256,155 +227,79 @@ class ChildController extends Controller
             $childsEconomicStatus = new ChildsEconomicStatus();
             $childsEconomicStatus->child_id = $child->id;
             $childsEconomicStatus->family_needs = $string_needs;
-
             unset($validatedData['family_needs']);
 
             $childsEconomicStatus->fill($validatedData);
-//            dd($validatedData,$request->all());
             $childsEconomicStatus->save();
 
             $childsResidentStatus = new ChildsResidentStatus();
             $childsResidentStatus->child_id = $child->id;
             $childsResidentStatus->resident_needs = $string_resident_needs;
             unset($validatedData['resident_needs']);
-//            $childsResidentStatus->fill($validatedData);
-
             $childsResidentStatus->fill($validatedData);
             $childsResidentStatus->save();
 
-*/
             if ($request->has('birth_certificate')) {
-                $imagefile = $request->file('birth_certificate');
-                $image_name1 = $child->id . '_birth_certificate' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/birth_certificates/', $imagefile, $image_name1);
-
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'birth_certificate',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'birth_certificate', $child->id, 'birth_certificates');
             }
-
             if ($request->has('child_personal_photo')) {
-                $imagefile = $request->file('child_personal_photo');
-                $image_name1 = $child->id . '_child_personal_photo' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/child_personal_photos/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'child_personal_photo',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'child_personal_photo', $child->id, 'child_personal_photos');
             }
 
             if ($request->has('education_certificate')) {
-                $imagefile = $request->file('education_certificate');
-                $image_name1 = $child->id . '_education_certificate' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/education_certificates/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'education_certificate',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'education_certificate', $child->id, 'education_certificates');
             }
             if ($request->has('father_id_card')) {
-                $imagefile = $request->file('father_id_card');
-                $image_name1 = $child->id . '_father_id_card' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/father_id_cards/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'father_id_card',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'father_id_card', $child->id, 'father_id_cards');
             }
-
             if ($request->has('guardian_id_card')) {
-                $imagefile = $request->file('guardian_id_card');
-                $image_name1 = $child->id . '_guardian_id_card' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/guardian_id_cards/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'guardian_id_card',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'guardian_id_card', $child->id, 'guardian_id_cards');
             }
-
             if ($request->has('medical_report')) {
-                $imagefile = $request->file('medical_report');
-                $image_name1 = $child->id . '_medical_report' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/medical_reports/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'medical_report',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'medical_report', $child->id, 'medical_reports');
             }
-
             if ($request->has('mother_id_card')) {
-                $imagefile = $request->file('mother_id_card');
-                $image_name1 = $child->id . '_mother_id_card' . '.' . $imagefile->getClientOriginalExtension();
-                Storage::disk('uploads')->putFileAs('/children/mother_id_cards/', $imagefile, $image_name1);
-                ChildsAttachment::create([
-                    'child_id' => $child->id,
-                    'file_name' => 'mother_id_card',
-                    'path' => $image_name1
-                ]);
+                $this->save_image($request, 'mother_id_card', $child->id, 'mother_id_cards');
             }
-
-//            dd($request->file('various_photos'));
             if ($request->has('various_photos')) {
                 $i = 1;
                 $x = $request->file('various_photos');
                 foreach ($x as $imagefile) {
                     $image_name1 = $child->id . '_various_photo' . $i . '.' . $imagefile->getClientOriginalExtension();
-                    Storage::disk('uploads')->putFileAs('/children/various_photos/', $imagefile, $image_name1);
+                    Storage::disk('local')->putFileAs('/public/uploads/children/various_photos/', $imagefile, $image_name1);
                     ChildsAttachment::create([
                         'child_id' => $child->id,
-                        'file_name' => 'various_photo' . $i,
+                        'file_name' => 'various_photos',
                         'path' => $image_name1
                     ]);
                     $i++;
                 }
             }
-
             DB::commit();
-
+            return redirect()->back()->with('success', 'New Child Created Successfully.');
         } catch (Exception $e) {
             DB::rollBack();
         }
-        /*
-        if ($validator->fails()) {
-            return redirect()
-                ->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        */
-        return redirect()->back();
     }
 
     public function edit($id)
     {
         $child = ChildIdentification::find($id);
-//        dd($child->family->relatives[1]['name']);
-//        dd(json_encode($child->family->relatives));
         $json_data = $child->family->relatives;
-//        foreach ($json_data as $a){
-//            dd($a['name']);
-//        }
-        /*
-        for ($i = 1; $i <= 15; $i++) {
-            if($json_data[2]['sex'] == "M"){
-                dd( "True");
-            }else {
-                dd("False");
-            }
-        }
-        */
-//        dd($json_data[1]['sex']);
-        foreach($json_data as $data){
-//            dd($data);
-    }
-//        dd($child);
+        $lessons = $child->education->intensive_lessons;
+        $lessonsArray = explode(',', $lessons);
+
+        $hobbies = $child->education->hobbies;
+        $hobbiesArray = explode(',', $hobbies);
+
+        $json_patients = $child->health->patients;
+
+        $familyNeeds = $child->economic->family_needs;
+        $familyNeedsArray = explode(',', $familyNeeds);
+
+        $residentNeeds = $child->resident->resident_needs;
+        $residentNeedsArray = explode(',', $residentNeeds);
+
         $scales = self::getEnumValues('child_identification', 'Scale_Of_poverty');
         $categories = self::getEnumValues('child_identification', 'category');
         $governates = DB::table('governorates')->get();
@@ -417,67 +312,233 @@ class ChildController extends Controller
         $edu_levels = self::getEnumValues('guardians', 'edu_level');
         $monthly_salary = self::getEnumValues('guardians', 'monthly_salary');
         $child_edu_level = self::getEnumValues('childs_edu_status', 'child_edu_level');
-
         $jobs_members = self::getEnumValues('childs_economic_status', 'jobs_members');
         $periodic_sponsorships = self::getEnumValues('childs_economic_status', 'periodic_sponsorships');
         $irregular_aids = self::getEnumValues('childs_economic_status', 'irregular_aids');
         $resident_statuses = self::getEnumValues('childs_resident_status', 'resident_status');
         $resident_types = self::getEnumValues('childs_resident_status', 'resident_type');
         $resident_descriptions = self::getEnumValues('childs_resident_status', 'resident_description');
-        return view('Child.edit', compact('child','scales',
-        'categories', 'governates', 'areas', 'relationsAr', 'relationsEN',
-        'mother_martial_status', 'guardian_martial_status', 'works',
-        'edu_levels', 'monthly_salary', 'child_edu_level', 'jobs_members'
-        , 'periodic_sponsorships', 'irregular_aids', 'resident_statuses', 'resident_types', 'resident_descriptions',
-        'json_data'
-    ));
-
+        return view('Child.edit', compact('child', 'scales',
+            'categories', 'governates', 'areas', 'relationsAr', 'relationsEN',
+            'mother_martial_status', 'guardian_martial_status', 'works',
+            'edu_levels', 'monthly_salary', 'child_edu_level', 'jobs_members'
+            , 'periodic_sponsorships', 'irregular_aids', 'resident_statuses', 'resident_types', 'resident_descriptions',
+            'json_data', 'lessonsArray', 'hobbiesArray', 'json_patients', 'familyNeedsArray', 'residentNeedsArray'
+        ));
     }
 
     public function update(Request $request, $id)
     {
-//        dd($request->all());
-        $request->validate([
-            'NO_ORPHAN_CODE' => ['required', 'integer'],
-            'childGovNum' => ['required', 'integer', 'digits:9'],
-            'Orphan_Name_En' => ['required', 'string'],
-            'Orphan_Name_Ar' => ['required', 'string'],
-            'ORPHAN_DOB' => ['required', 'date'],
-            'Category' => ['required', 'exists:beneficiaries,Category'],
-            'Scale_Of_poverty' => ['required', 'exists:beneficiaries,Scale_Of_poverty'],
-            'Father_Name_EN' => ['required', 'string'],
-            'Father_Name_AR' => ['required', 'string'],
-            'Father_ID' => ['required', 'integer', 'digits:9'],
-            'father_death_date' => ['nullable', 'date'],
-            'NO_SPONSORED' => ['required', 'integer'],
-            'CAT' => ['required', 'exists:beneficiaries,CAT'],
-            //Address Information alidation Rules
-            'Address' => ['required', 'string'],
-            'governate' => ['required', 'exists:governorates,gov_id'],
-            'camp' => ['required', 'exists:camps,camp_id'],
-            'MAIL_CODE' => ['int', 'nullable'],
-            //Banking Information Validation Rules
-            'AREA_CODE' => ['int', 'nullable'],
-            'ACCOUNT_NO_BOP' => ['required', 'int'],
-            'Branch_No' => ['required', 'int'],
-            'IBAN' => ['string', 'max:34', 'required'],
-            //Guardian Information Validation Rules
-            'Guardian_En' => ['required', 'string'],
-            'Guardian_Ar' => ['required', 'string'],
-            'relation_en' => ['required', 'exists:guardian,REL_TO_CHILD_EN'],
-            'relation_ar' => ['required', 'exists:guardian,REL_TO_CHILD_AR'],
-            'GuardianPhoneNum' => ['required', 'between: 8,10'],
-            'GuardianPhoneNum2' => ['required', 'between: 8,10'],
-            'GuardianTelephoneNum' => ['nullable', 'integer', 'digits:9'],
-        ]);
-//        dd('success');
-        return redirect()->back();
+        $this->rules['child_code'] = Rule::unique('child_identification')->ignore($id, 'id');
+        $string_lessons = null;
+        $string_hobbies = null;
+        $string_needs = null;
+        $string_resident_needs = null;
+
+        if ($request->has('intensive_lessons')) {
+            $count_lessons = count($request->intensive_lessons);
+            $a = array();
+            for ($i = 0; $i < $count_lessons; $i++) {
+                array_push($a, $request->intensive_lessons[$i]);
+            }
+            array_push($a, $request->input('custom_lesson'));
+            $string_lessons = implode(',', $a);
+        }
+
+        if ($request->has('hobbies')) {
+            $count_hobbies = count($request->hobbies);
+            $a = array();
+            for ($i = 0; $i < $count_hobbies; $i++) {
+                array_push($a, $request->hobbies[$i]);
+            }
+            array_push($a, $request->input('custom_hobbie'));
+            $string_hobbies = implode(',', $a);
+        }
+
+        if ($request->has('family_needs')) {
+            $count_needs = count($request->family_needs);
+            $a = array();
+            for ($i = 0; $i < $count_needs; $i++) {
+                array_push($a, $request->family_needs[$i]);
+            }
+            array_push($a, $request->input('custom_need'));
+            $string_needs = implode(',', $a);
+        }
+
+        if ($request->has('resident_needs')) {
+            $count_resident_needs = count($request->resident_needs);
+            $a = array();
+            for ($i = 0; $i < $count_resident_needs; $i++) {
+                array_push($a, $request->resident_needs[$i]);
+            }
+            $string_resident_needs = implode(',', $a);
+        }
+
+        $validator = Validator::make($request->all(), $this->rules);
+
+        if ($validator->fails()) {
+            dd($validator->errors());
+        }
+        $validatedData = $request->validate($this->rules);
+        DB::beginTransaction();
+        try {
+            $child = ChildIdentification::findOrFail($id);
+            $child->has_disability = $request->has('has_disability') ? 1 : 0;
+            $child->fill($validatedData);
+            $child->save();
+
+            $guardian = Guardian::where('child_id', $id)->firstOrFail();
+            $guardian->fill($validatedData);
+            $guardian->save();
+
+            $familiesConfiguration = FamiliesConfiguration::where('child_id', $id)->firstOrFail();
+            $familiesConfiguration->fill($validatedData);
+            $familiesConfiguration->save();
+
+            $childEducationStatus = ChildEducationStatus::where('child_id', $id)->firstOrFail();
+            $childEducationStatus->intensive_lessons = $string_lessons;
+            $childEducationStatus->hobbies = $string_hobbies;
+            unset($validatedData['intensive_lessons'], $validatedData['hobbies']);
+            $childEducationStatus->fill($validatedData);
+            $childEducationStatus->save();
+
+            $childHealthSituation = ChildHealthSituation::where('child_id', $id)->firstOrFail();
+            $childHealthSituation->fill($validatedData);
+            $childHealthSituation->save();
+
+            $childsEconomicStatus = ChildsEconomicStatus::where('child_id', $id)->firstOrFail();
+            $childsEconomicStatus->family_needs = $string_needs;
+            unset($validatedData['family_needs']);
+            $childsEconomicStatus->fill($validatedData);
+            $childsEconomicStatus->save();
+
+            $childsResidentStatus = ChildsResidentStatus::where('child_id', $id)->firstOrFail();
+            $childsResidentStatus->child_id = $child->id;
+            $childsResidentStatus->resident_needs = $string_resident_needs;
+            unset($validatedData['resident_needs']);
+            $childsResidentStatus->fill($validatedData);
+            $childsResidentStatus->save();
+
+            if ($request->has('birth_certificate')) {
+                $this->update_image($request, 'birth_certificate', $child->id, 'birth_certificates');
+            }
+            if ($request->has('child_personal_photo')) {
+                $this->update_image($request, 'child_personal_photo', $child->id, 'child_personal_photos');
+            }
+            if ($request->has('education_certificate')) {
+                $this->update_image($request, 'education_certificate', $child->id, 'education_certificates');
+            }
+            if ($request->has('father_id_card')) {
+                $this->update_image($request, 'father_id_card', $child->id, 'father_id_cards');
+            }
+            if ($request->has('guardian_id_card')) {
+                $this->update_image($request, 'guardian_id_card', $child->id, 'guardian_id_cards');
+            }
+            if ($request->has('medical_report')) {
+                $this->update_image($request, 'medical_report', $child->id, 'medical_reports');
+            }
+            if ($request->has('mother_id_card')) {
+                $this->update_image($request, 'mother_id_card', $child->id, 'mother_id_cards');
+            }
+            if ($request->has('various_photos')) {
+                $i = 1;
+                $x = $request->file('various_photos');
+                foreach ($x as $imagefile) {
+                    $image_name1 = $child->id . '_various_photo' . $i . '.' . $imagefile->getClientOriginalExtension();
+                    Storage::disk('local')->putFileAs('/public/uploads/children/various_photos/', $imagefile, $image_name1);
+                    ChildsAttachment::create([
+                        'child_id' => $child->id,
+                        'file_name' => 'various_photos' . $i,
+                        'path' => $image_name1
+                    ]);
+                    $i++;
+                }
+            }
+            DB::commit();
+            return redirect()->back()->with('success', 'The Child Updated Successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
     }
 
-    public function show_profile($id)
+    public function show($id)
     {
-
+        $child = ChildIdentification::with([
+            'guardian.governorate',
+            'guardian.area',
+            'education',
+            'health',
+            'economic',
+            'resident',
+            'family'
+        ])->findOrFail($id);
+//        dd($child);
+        $attachs = ChildsAttachment::where('child_id', '=', $id)->get()->toArray();
+        $photo = ChildsAttachment::where('child_id', '=', $id)->where('file_name', '=', 'child_personal_photos')->first();
+//        $guardin = Guardian::findOrFail($id);
+        return view('Child.child-profile', compact('child', 'attachs', 'photo'));
     }
+
+    public function destroy($id)
+    {
+        $child = ChildIdentification::find($id);
+        $del = $child->delete();
+        if ($del) {
+            return redirect()->back()->with('success', 'The Child Delete Successfully.');
+        } else {
+            return redirect()->back()->with('failed', 'The Child Delete failed.');
+        }
+    }
+
+    public function download($filename, $path)
+    {
+        $file = 'uploads/children/' . $filename . '/' . $path;
+        if (Storage::disk('public')->exists($file)) {
+            return Storage::disk('public')->download($file);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function update_image(Request $request, $request_file, $child_id, $parent_folder)
+    {
+        $imagefile = $request->file($request_file);
+        $image_name1 = $child_id . '_' . $request_file . '.' . $imagefile->getClientOriginalExtension();
+        $attachment = ChildsAttachment::where('child_id', $child_id)->where('file_name', $parent_folder)->firstOrFail();
+        $file = 'uploads/children/' . $attachment->file_name . '/' . $attachment->path;
+        if (!$attachment) {
+            Storage::disk('local')->putFileAs('/public/uploads/children/' . $parent_folder . '/', $imagefile, $image_name1);
+            ChildsAttachment::create([
+                'child_id' => $child_id,
+                'file_name' => $parent_folder,
+                'path' => $image_name1
+            ]);
+        } else {
+            if (Storage::disk('public')->exists($file)) {
+                Storage::disk('public')->delete($file);
+            }
+            Storage::disk('local')->putFileAs('/public/uploads/children/' . $parent_folder . '/', $imagefile, $image_name1);
+            $attachment->file_name = $parent_folder;
+            $attachment->path = $image_name1;
+            $attachment->save();
+        }
+    }
+
+    public function save_image(Request $request, $request_file, $child_id, $parent_folder)
+    {
+        $imagefile = $request->file($request_file);
+        $image_name1 = $child_id . '_' . $request_file . '.' . $imagefile->getClientOriginalExtension();
+        Storage::disk('local')->putFileAs('/public/uploads/children/' . $parent_folder . '/', $imagefile, $image_name1);
+        ChildsAttachment::create([
+            'child_id' => $child_id,
+            'file_name' => $parent_folder,
+            'path' => $image_name1
+        ]);
+    }
+
+
+
+
 
     public static function getEnumValues($table, $column)
     {

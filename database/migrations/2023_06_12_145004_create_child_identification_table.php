@@ -19,7 +19,7 @@ class CreateChildIdentificationTable extends Migration
             $table->string('child_fullName_en');
             $table->string('child_fullName_ar');
 
-            $table->integer('child_id_no');
+            $table->integer('child_id_no')->unique();;
             $table->enum('gender', ['Male', 'Female']);
             $table->enum('category', ['Orphan', 'Needy', 'Special Needs']);
             $table->date('birth_date');
@@ -27,7 +27,7 @@ class CreateChildIdentificationTable extends Migration
 
             $table->string('mother_fullName_en');
             $table->string('mother_fullName_ar');
-            $table->integer('mother_id_no');
+            $table->integer('mother_id_no')->unique();;
 
             $table->enum('mother_martial_status', ['Divorced', 'Married', 'Widow','Abandon']);
 
@@ -35,7 +35,7 @@ class CreateChildIdentificationTable extends Migration
             $table->string('father_fullName_en');
             $table->string('father_fullName_ar');
 
-            $table->integer('father_id_no');
+            $table->integer('father_id_no')->unique();;
             $table->date('death_date')->nullable();
 
             $table->boolean('has_disability')->default(false);

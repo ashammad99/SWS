@@ -65,9 +65,6 @@
 						</div>
 					</div><!-- col-6 -->
 				</div>
-				<!-- /row -->
-
-				<!-- row -->
 				<div class="row row-sm">
 					<div class="col-md-6">
 						<div class="card mg-b-20">
@@ -79,7 +76,7 @@
 								<div class="ht-200 ht-sm-300" id="flotArea1"></div>
 							</div>
 						</div>
-					</div><!-- col-6 -->
+					</div>
 					<div class="col-md-6 ">
 						<div class="card mg-b-20">
 							<div class="card-body">
@@ -90,7 +87,7 @@
 								<div class="ht-200 ht-sm-300" id="flotArea2"></div>
 							</div>
 						</div>
-					</div><!-- col-6 -->
+					</div>
 				</div>
 				<!-- /row -->
 

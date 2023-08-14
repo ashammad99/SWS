@@ -12,8 +12,8 @@
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
     <style>
         .toggler {
-            
-           
+
+
         }
 
         .toggler input {
@@ -116,7 +116,7 @@
             }
         }
     </style>
- 
+
 @endsection
 @section('page-header')
     <!-- breadcrumb -->
@@ -144,7 +144,6 @@
                         <div class="d-flex justify-content-between">
                             <h4 class="card-title mg-b-0"><span style="color:blue">{{ $role->name }}</span> ROLE TABLE
                             </h4>
-
                             <div class="btn-icon-list"><button type="submit" class="btn btn-success btn-with-icon "><i
                                         class="typcn typcn-edit"></i> Save</button></div>
 

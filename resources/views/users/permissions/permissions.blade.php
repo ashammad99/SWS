@@ -26,50 +26,51 @@
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title mg-b-0">PERMISSIONS TABLE</h4>
                         <div class="btn-icon-list">
-                                <button  class="btn btn-success btn-icon"  data-toggle="modal" data-target="#modaldemo3"><i class="typcn typcn-document-add"></i></button>
+                            <button class="btn btn-success btn-icon" data-toggle="modal" data-target="#modaldemo3"><i
+                                    class="typcn typcn-document-add"></i></button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="table-responsive border-top userlist-table">
 
                         <table class="table card-table table-striped table-vcenter text-nowrap mb-0">
                             <thead>
-                                <tr>
-                                    <th class="wd-lg-8p"><span>Name</span></th>
-                                    <th class="wd-lg-8p"><span>Note</span></th>
-                                    <th class="wd-lg-20p">Action</th>
-                                </tr>
+                            <tr>
+                                <th class="wd-lg-8p"><span>Name</span></th>
+                                <th class="wd-lg-8p"><span>Note</span></th>
+                                <th class="wd-lg-20p">Action</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach ($permissions as $perimission)
-                                    <td style="font-weight: 500">{{ $perimission->name }}</td>
-                                    <td>{{ $perimission->note }}</td>
-                                    <td>
-                                       
-                                        <a href="" data-id="{{ $perimission->id }}"
-                                            data-name="{{ $perimission->name }}" data-note="{{ $perimission->note }}"
-                                            data-target="#modaldemo2" data-toggle="modal" class="btn btn-sm btn-info">
-                                            <i class="las la-pen"></i>
-                                        </a>
-                                        <a href="" data-id="{{ $perimission->id }}"
-                                            data-name="{{ $perimission->name }}" data-target="#modaldemo1"
-                                            data-toggle="modal" class="btn btn-sm btn-danger">
-                                            <i class="las la-trash"></i>
-                                        </a>
-                                    </td>
-                                    </tr>
-                                @endforeach
-                                <tr>
+                            @foreach ($permissions as $perimission)
+                                <td style="font-weight: 500">{{ $perimission->name }}</td>
+                                <td>{{ $perimission->note }}</td>
+                                <td>
+
+                                    <a href="" data-id="{{ $perimission->id }}"
+                                       data-name="{{ $perimission->name }}" data-note="{{ $perimission->note }}"
+                                       data-target="#modaldemo2" data-toggle="modal" class="btn btn-sm btn-info">
+                                        <i class="las la-pen"></i>
+                                    </a>
+                                    <a href="" data-id="{{ $perimission->id }}"
+                                       data-name="{{ $perimission->name }}" data-target="#modaldemo1"
+                                       data-toggle="modal" class="btn btn-sm btn-danger">
+                                        <i class="las la-trash"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                            @endforeach
+                            <tr>
                             </tbody>
                         </table>
                     </div>
@@ -97,8 +98,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Confirmation</h6><button aria-label="Close" class="close" data-dismiss="modal"
-                        type="button"><span aria-hidden="true">&times;</span></button>
+                    <h6 class="modal-title">Confirmation</h6>
+                    <button aria-label="Close" class="close" data-dismiss="modal"
+                            type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <form action="{{ route('perimissions.delete', 'test') }}">
                     @csrf
@@ -124,8 +126,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Edit Perimission</h6><button aria-label="Close" class="close"
-                        data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                    <h6 class="modal-title">Edit Perimission</h6>
+                    <button aria-label="Close" class="close"
+                            data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <form action="{{ route('perimissions.update1') }}" method="post">
                     @csrf
@@ -136,7 +139,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Perimission Name</label>
                                 <input type="text" class="form-control" name="name" id="name"
-                                    placeholder="Enter Perimission" readonly>
+                                       placeholder="Enter Perimission" readonly>
                                 @if ($errors->has('name'))
                                     <div class="error" style="color: red;">{{ $errors->first('name') }}</div>
                                 @endif
@@ -144,8 +147,9 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Perimission Note</label>
-                                <textarea placeholder="Define Permission" name="note" class="form-control" cols="30" rows="10"
-                                    id="note"></textarea>
+                                <textarea placeholder="Define Permission" name="note" class="form-control" cols="30"
+                                          rows="10"
+                                          id="note"></textarea>
                                 @if ($errors->has('note'))
                                     <div class="error" style="color: red;">{{ $errors->first('note') }}</div>
                                 @endif
@@ -168,8 +172,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Create Perimission</h6><button aria-label="Close" class="close"
-                        data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                    <h6 class="modal-title">Create Perimission</h6>
+                    <button aria-label="Close" class="close"
+                            data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <form method="post" action="{{route('perimissions.store')}}">
                     @csrf
@@ -179,18 +184,19 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Perimission Name</label>
                                 <input type="text" class="form-control" name="name"
-                                    placeholder="Enter Perimission">
-									@if($errors->has('name'))
-									<div class="error" style="color: red;">{{ $errors->first('name') }}</div>
-									@endif
+                                       placeholder="Enter Perimission">
+                                @if($errors->has('name'))
+                                    <div class="error" style="color: red;">{{ $errors->first('name') }}</div>
+                                @endif
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Perimission Note</label>
-                                <textarea placeholder="Define Permission" name="note" class="form-control" cols="30" rows="10"></textarea>
-									@if($errors->has('note'))
-									<div class="error" style="color: red;">{{ $errors->first('note') }}</div>
-									@endif
+                                <textarea placeholder="Define Permission" name="note" class="form-control" cols="30"
+                                          rows="10"></textarea>
+                                @if($errors->has('note'))
+                                    <div class="error" style="color: red;">{{ $errors->first('note') }}</div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -212,7 +218,7 @@
     <!-- Internal Select2 js-->
     <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
     <script>
-        $('#modaldemo1').on('show.bs.modal', function(event) {
+        $('#modaldemo1').on('show.bs.modal', function (event) {
             console.log('Modal open');
             var button = $(event.relatedTarget) // Button that triggered the modal
             var id = button.data('id')
@@ -226,7 +232,7 @@
         })
     </script>
     <script>
-        $('#modaldemo2').on('show.bs.modal', function(event) {
+        $('#modaldemo2').on('show.bs.modal', function (event) {
             console.log('Modal open2');
             var button = $(event.relatedTarget) // Button that triggered the modal
             var id = button.data('id')

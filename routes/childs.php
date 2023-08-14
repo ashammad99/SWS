@@ -1,33 +1,33 @@
 <?php
 
-use \App\Http\Controllers\Child\ChildController;
+use App\Http\Controllers\Child\ChildController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Child\ChildrenReportsController;
 
 Route::group(
     [
-        //'prefix' => '/beneficiary/',
         'middleware' => ['auth']
     ],
     function () {
-       Route::resource(
+        Route::resource(
             '/child',
             ChildController::class
         );
-        Route::get('/profile', [ChildController::class, 'show_profile'])
-            ->name('child.profile');
-//        Route::get('/', [ChildController::class, 'index'])
-//            ->name('beneficiary.index');
-//
-//        Route::get('/create', [ChildController::class, 'create'])
-//            ->name('beneficiary.create');
-//
-//        Route::post('/store', [ChildController::class, 'store'])
-//            ->name('beneficiary.store');
-//
-//        Route::get('/{id}/edit', [ChildController::class, 'edit'])
-//            ->name('beneficiary.edit');
-
     }
-
-
 );
+Route::get(
+    '/child/summary-report/{id}', [ChildrenReportsController::class, 'summary_report']
+)->name('reports.child-summary');
+
+Route::post(
+    '/child/summary-report/store', [ChildrenReportsController::class, 'summary_report_store']
+)->name('reports.child-summary-store');
+
+Route::get(
+    '/child/child-report/{id}', [ChildrenReportsController::class, 'create_report']
+)->name('reports.create-child');
+
+
+
+Route::get('/download/{filename}/{path}',
+    [\App\Http\Controllers\Child\ChildController::class, 'download'])->name('download');

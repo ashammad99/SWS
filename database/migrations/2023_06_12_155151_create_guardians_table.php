@@ -27,7 +27,7 @@ class CreateGuardiansTable extends Migration
             $table->enum('work', ['Employee', 'Jobless', 'Irregular work']);
 
             $table->enum('edu_level',['Primary', 'Preparator', 'Secondary', 'Diploma', 'University', 'Higher Degree', 'Vocational', 'illiterate']);
-            $table->enum('monthly_salary',['000-200 GBP', '200-500 GBP', 'More than 500 BGP']);
+            $table->enum('monthly_salary',['000-200 GBP', '200-500 GBP', 'More than 500 GBP']);
 
 
             $table->unsignedBigInteger('child_id');

@@ -133,9 +133,9 @@ class RoleController extends Controller
         $status = $role->syncPermissions($request->permissions);
 
         if ($status) {
-            return redirect()->route('roles.index')->with('success', 'The Permissions Added Successfully To Role.');
+            return redirect()->route('roles.index')->with('success', 'The Permissions Assign Successfully To Role.');
         } else {
-            return redirect()->back()->with('failed', 'The Permissions Not Added Successfully To Role.');
+            return redirect()->back()->with('failed', 'The Permissions Not Assign Successfully To Role.');
         }
     }
 }

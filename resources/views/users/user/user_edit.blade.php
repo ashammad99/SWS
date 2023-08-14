@@ -84,13 +84,6 @@ SWS - Users - Create
                                 @endif
                             </div>
 							<div class="form-group">
-								<label for="Username">Username</label>
-								<input type="text"  id="Username" name="username" class="form-control" placeholder="Enter Username" value="{{$user->username}}">
-								@if($errors->has('username'))
-								<div class="error" style="color: red;">{{ $errors->first('username') }}</div>
-								@endif
-							</div>
-							<div class="form-group">
 								<label for="Password">Password</label>
 								<input type="password" placeholder="at least 8 Characters" name="password" id="Password" class="form-control">
 								@if($errors->has('password'))

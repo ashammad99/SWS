@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Governorate extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'gov_id';
 
-    public function Benficiary() {
+    public function child() {
         return $this->hasMany(Governorate::class,'gov_id','gov_id');
     }
 }

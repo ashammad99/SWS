@@ -33,13 +33,13 @@ class UserController extends Controller
     {
         $roles = Role::all();
         $govs = Governorate::all();
-        return view('users.user.user_create', compact('roles','govs'));
+        return view('users.user.user_create', compact('roles', 'govs'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -78,7 +78,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update_userRole(Request $request, $id)
@@ -88,7 +88,7 @@ class UserController extends Controller
         $request->validate([
             'photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-        $user = User::where('id',$id)->first();
+        $user = User::where('id', $id)->first();
         $photo = $user->photo;
         if ($request->has('photo')) {
             $photo = time() . '.' . $request->photo->extension();
@@ -103,7 +103,7 @@ class UserController extends Controller
             $mode = 1;
         }
         if ($request->has('governorate_id')) {
-                $user->update(['gov_id'=>$request->governorate_id]);
+            $user->update(['gov_id' => $request->governorate_id]);
         }
         $status = $user->update([
             'name_en' => $request->name_en,
@@ -129,7 +129,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -150,14 +150,14 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
         // $roleUser = Role::where('id',$user->roles->name)->first();
         $govs = Governorate::all();
-        return view('users.user.user_edit', compact('user', 'roles','govs'));
+        return view('users.user.user_edit', compact('user', 'roles', 'govs'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -202,7 +202,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(request $request)
@@ -210,7 +210,7 @@ class UserController extends Controller
         // dd($request->all());
         $id = $request->id;
         $user = User::find($id);
-        $del =  $user->delete();
+        $del = $user->delete();
 
         if ($del) {
             return redirect()->back()->with('success', 'The User Delete Successfully.');
@@ -218,6 +218,7 @@ class UserController extends Controller
             return redirect()->back()->with('failed', 'The User Delete failed.');
         }
     }
+
     public function restore($id)
     {
         // Find the trashed user by ID
@@ -229,12 +230,27 @@ class UserController extends Controller
         // Redirect back or perform any other actions
         return redirect()->back()->with('success', 'User has been restored successfully.');
     }
+
     public function getAjax()
     {
         $id = $_POST('id');
-       $per = Role::find($id)->first;
-       return response()->json([
+        $per = Role::find($id)->first;
+        return response()->json([
             'per' => $per,
-       ]);
+        ]);
+    }
+/*
+ //        dd($user->getAllPermissions());
+//        dd($user->getPermissionsViaRoles());
+        $user->roles->pluck('name')[0];
+        $role_name = $user->roles->pluck('name')[0];
+        $role = Role::where('name', $role_name)->first();
+        $permissions = $role->permissions()->pluck('name');
+ */
+    public function show_permissions($id)
+    {
+        $user = User::find($id);
+        $permissions = $user->getAllPermissions();
+        return view('users.permissions.show_permissions', compact('permissions'));
     }
 }

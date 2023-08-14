@@ -90,12 +90,12 @@
                                     <td>
                                         @if($user->trashed())
                                             <span class="label text-danger d-flex">
-                    <div class="dot-label bg-danger ml-1"></div>Trashed
-                </span>
+                                                <div class="dot-label bg-danger ml-1"></div>Trashed
+                                            </span>
                                         @else
                                             <span class="label text-success d-flex">
-                    <div class="dot-label bg-success ml-1"></div>Not Trashed
-                </span>
+                                                <div class="dot-label bg-success ml-1"></div>Not Trashed
+                                            </span>
                                         @endif
                                     </td>
                                     <td>
@@ -103,19 +103,20 @@
                                             <i class="las la-cog"></i>
                                         </a>
 
-                                        <a href="" data-id="{{ $user->id }}"
-                                           data-name="{{ $user->name_en }}" data-target="#modaldemo1"
-                                           data-toggle="modal" class="btn btn-sm btn-danger">
-                                            <i class="las la-trash"></i>
-                                        </a>
+                                        @if(!($user->id == Auth::User()->id) && !($user->id == 1))
+                                            <a href="" data-id="{{ $user->id }}"
+                                               data-name="{{ $user->name_en }}" data-target="#modaldemo1"
+                                               data-toggle="modal" class="btn btn-sm btn-danger">
+                                                <i class="las la-trash"></i>
+                                            </a>
+                                        @endif
                                         @if($user->trashed())
-
-                                        <a href="{{route('users.restore', $user->id)}}" class="btn btn-sm btn-primary">
-                                            <i class="las la-undo"></i>
-                                        </a>
+                                            <a href="{{route('users.restore', $user->id)}}"
+                                               class="btn btn-sm btn-primary">
+                                                <i class="las la-undo"></i>
+                                            </a>
                                         @endif
                                     </td>
-
                                 </tr>
                             @endforeach
 

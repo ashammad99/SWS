@@ -8,12 +8,15 @@
     <link href="{{URL::asset('assets/plugins/datatable/css/responsive.dataTables.min.css')}}" rel="stylesheet">
     <link href="{{URL::asset('assets/plugins/select2/css/select2.min.css')}}" rel="stylesheet">
 @endsection
+@section('title')
+    SWS - Children List
+@endsection
 @section('page-header')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">Tables</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ Data Tables</span>
+                <h4 class="content-title mb-0 my-auto">Tables</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ Children Table</span>
             </div>
         </div>
         <div class="d-flex my-xl-auto right-content">
@@ -66,7 +69,7 @@
                                 <th class="wd-15p border-bottom-0">Child Name</th>
                                 <th class="wd-15p border-bottom-0">Category</th>
                                 <th class="wd-20p border-bottom-0">Guardian Name</th>
-                                <th class="wd-15p border-bottom-0">Rel To Child</th>
+                                <th class="wd-15p border-bottom-0">Relation</th>
                                 <th class="wd-10p border-bottom-0">Scale Of Poverty</th>
                                 <th class="wd-25p border-bottom-0">Sponsorship Category</th>
                                 <th class="wd-25p border-bottom-0">Action</th>
@@ -86,29 +89,15 @@
                                     <a href="{{route('child.edit',$child->id)}}" class="btn btn-sm btn-primary">
                                         <i class="las la-cog"></i>
                                     </a>
-                                    <a href="" data-id=""
-                                       data-name="" data-target="#modaldemo1"
+                                    <a href="" data-id="{{$child->id}}"
+                                       data-name="{{$child->child_code}}" data-target="#modaldemo1"
                                        data-toggle="modal" class="btn btn-sm btn-danger">
                                         <i class="las la-trash"></i>
                                     </a>
-                                    <a href="{{route('child.profile',$child->id)}}" class="btn btn-sm btn-primary">
+                                    <a href="{{route('child.show',$child->id)}}" class="btn btn-sm btn-primary">
                                         <i class="fa fa-user"></i>
                                     </a>
                                 </td>
-                               {{--  <td>
-                                     <td>
-                                     <a href="{{route('beneficiaries.edit',['$Child',$orphan->NO_ORPHAN_CODE])}}" class="btn btn-sm btn-dark">Edit</a>
-
-                                    </td>
-                                <td>
-                                        <form action="{{route('beneficiaries.destroy',['$Child',$orphan->NO_ORPHAN_CODE])}}" method="post">
-                                         @csrf --}}{{-- csrf_field()--}}{{--
-                                         @method('delete')
-                                         <!--input type="hidden" name="_method" value="delete"-->
-                                         <button class="btn btn-sm btn-danger">Delete<i class="las la-trash"></i></button>
-                                     </form>
-                                </td>
-                                 </td>--}}
                                 </tr>
                             @endforeach
                             </tbody>
@@ -124,6 +113,33 @@
     <!-- Container closed -->
     </div>
     <!-- main-content closed -->
+
+    <!-- Delete Child modal -->
+    <div class="modal" id="modaldemo1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title">Confirmation</h6>
+                    <button aria-label="Close" class="close" data-dismiss="modal"
+                            type="button"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <form action="{{ route('child.destroy', $child->id) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id">
+                        <h6 style="color:red">Warning !!</h6>
+                        <p>Are You Sure You Want To Delete Child(<b id="code"></b>).</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn ripple btn-danger" type="submit">Delete</button>
+                        <button class="btn ripple btn-secondary" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Delete Child modal -->
 @endsection
 @section('js')
     <!-- Internal Data tables -->
@@ -145,4 +161,21 @@
     <script src="{{URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js')}}"></script>
     <!--Internal  Datatable js -->
     <script src="{{URL::asset('assets/js/table-data.js')}}"></script>
+    <script>
+        $('#modaldemo1').on('show.bs.modal', function (event) {
+            console.log('Modal open');
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id')
+            var name = button.data('name') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-body #id').val(id)
+            modal.find('.modal-body #name').val(name)
+            document.getElementById("code").innerHTML = name;
+        })
+    </script>
 @endsection
+<!-- Delete User modal -->
+
+<!-- End Delete User modal -->
